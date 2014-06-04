@@ -8,13 +8,13 @@ import (
 )
 
 // templ represents a single template
-type templ struct {
+type templateHandler struct {
 	source string
 	templ  *template.Template
 }
 
-// Handle is a http.HandleFunc that renders this template.
-func (t *templ) Handle(w http.ResponseWriter, r *http.Request) {
+// ServeHTTP handles the HTTP request.
+func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if t.templ == nil {
 		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.source)))
 	}
@@ -24,7 +24,7 @@ func (t *templ) Handle(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	// root
-	http.HandleFunc("/", (&templ{source: "chat.html"}).Handle)
+	http.Handle("/", &templateHandler{source: "chat.html"})
 
 	// start the web server
 	if err := http.ListenAndServe(":8080", nil); err != nil {
