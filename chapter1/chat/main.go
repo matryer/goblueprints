@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -18,10 +19,14 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if t.templ == nil {
 		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 	}
-	t.templ.Execute(w, nil)
+	t.templ.Execute(w, r)
 }
 
+var host = flag.String("host", ":8080", "The host of the application.")
+
 func main() {
+
+	flag.Parse() // parse the flags
 
 	r := newRoom()
 
@@ -32,7 +37,8 @@ func main() {
 	go r.run()
 
 	// start the web server
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	log.Println("Starting web server on", *host)
+	if err := http.ListenAndServe(*host, nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 
