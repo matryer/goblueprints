@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// TestNew tests the tracing behaviour.
 func TestNew(t *testing.T) {
 
 	var buf bytes.Buffer
