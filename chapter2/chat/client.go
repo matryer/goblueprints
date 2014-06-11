@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/gorilla/websocket"
-)
+import "github.com/gorilla/websocket"
 
 // client represents a single chatting user.
 type client struct {
