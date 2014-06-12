@@ -18,8 +18,6 @@ type authHandler struct {
 
 func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	log.Println(r.Cookies())
-
 	if _, err := r.Cookie("auth"); err == http.ErrNoCookie {
 		// not authenticated
 		w.Header()["Location"] = []string{"/login"}
@@ -66,9 +64,22 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			log.Fatalln("Error when trying to get provider", provider, "-", err)
 		}
 
-		// get the credentials and save them in the auth cookie
+		// get the credentials
 		creds, err := provider.CompleteAuth(objx.MustFromURLQuery(r.URL.RawQuery))
-		authCookieValue := creds.MustBase64()
+		if err != nil {
+			log.Fatalln("Error when trying to complete auth for", provider, "-", err)
+		}
+
+		// get the user
+		user, err := provider.GetUser(creds)
+		if err != nil {
+			log.Fatalln("Error when trying to get user from", provider, "-", err)
+		}
+
+		// save some data
+		authCookieValue := objx.New(map[string]interface{}{
+			"name": user.Name(),
+		}).MustBase64()
 		http.SetCookie(w, &http.Cookie{
 			Name:  "auth",
 			Value: authCookieValue,
