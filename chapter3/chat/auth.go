@@ -5,11 +5,10 @@ import (
 	"log"
 	"strings"
 
-	"github.com/stretchr/objx"
+	"net/http"
 
 	"github.com/stretchr/gomniauth"
-
-	"net/http"
+	"github.com/stretchr/objx"
 )
 
 type authHandler struct {
