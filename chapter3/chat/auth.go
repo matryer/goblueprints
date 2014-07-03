@@ -13,6 +13,21 @@ import (
 	"github.com/stretchr/objx"
 )
 
+import gomniauthcommon "github.com/stretchr/gomniauth/common"
+
+type ChatUser interface {
+	UniqueID() string
+	AvatarURL() string
+}
+type chatUser struct {
+	gomniauthcommon.User
+	uniqueID string
+}
+
+func (u chatUser) UniqueID() string {
+	return u.uniqueID
+}
+
 type authHandler struct {
 	next http.Handler
 }
@@ -71,24 +86,26 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			log.Fatalln("Error when trying to complete auth for", provider, "-", err)
 		}
 
-		// get the user
 		user, err := provider.GetUser(creds)
 		if err != nil {
 			log.Fatalln("Error when trying to get user from", provider, "-", err)
 		}
+		chatUser := &chatUser{User: user}
 
-		// hash the users email address to act as their
-		// unique ID
 		m := md5.New()
 		io.WriteString(m, strings.ToLower(user.Name()))
-		userId := fmt.Sprintf("%x", m.Sum(nil))
+		chatUser.uniqueID = fmt.Sprintf("%x", m.Sum(nil))
+
+		avatarURL, err := avatars.GetAvatarURL(chatUser)
+		if err != nil {
+			log.Fatalln("Error when trying to GetAvatarURL", "-", err)
+		}
 
 		// save some data
 		authCookieValue := objx.New(map[string]interface{}{
-			"userid":     userId,
+			"userid":     chatUser.uniqueID,
 			"name":       user.Name(),
-			"avatar_url": user.AvatarURL(),
-			"email":      user.Email(),
+			"avatar_url": avatarURL,
 		}).MustBase64()
 
 		http.SetCookie(w, &http.Cookie{

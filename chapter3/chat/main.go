@@ -17,6 +17,9 @@ import (
 	"github.com/stretchr/gomniauth/providers/google"
 )
 
+// set the active Avatar implementation
+var avatars Avatar = UseFileSystemAvatar
+
 // templ represents a single template
 type templateHandler struct {
 	filename string
@@ -53,7 +56,7 @@ func main() {
 		facebook.New("537611606322077", "f9f4d77b3d3f4f5775369f5c9f88f65e", "http://localhost:8080/auth/callback/facebook"),
 	)
 
-	r := newRoom(UseFileSystemAvatar)
+	r := newRoom()
 	r.tracer = trace.New(os.Stdout)
 
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
