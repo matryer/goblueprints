@@ -1,10 +1,9 @@
 package main
 
 import (
+	"errors"
 	"io/ioutil"
 	"path"
-
-	"errors"
 )
 
 // ErrNoAvatar is the error that is returned when the
@@ -19,6 +18,17 @@ type Avatar interface {
 	// ErrNoAvatarURL is returned if the object is unable to get
 	// a URL for the specified client.
 	GetAvatarURL(ChatUser) (string, error)
+}
+
+type TryAvatars []Avatar
+
+func (a TryAvatars) GetAvatarURL(u ChatUser) (string, error) {
+	for _, avatar := range a {
+		if url, err := avatar.GetAvatarURL(u); err == nil {
+			return url, nil
+		}
+	}
+	return "", ErrNoAvatarURL
 }
 
 type FileSystemAvatar struct{}

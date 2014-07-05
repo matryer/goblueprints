@@ -8,17 +8,19 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/stretchr/objx"
-
 	"github.com/matryer/goblueprints/chapter1/trace"
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/facebook"
 	"github.com/stretchr/gomniauth/providers/github"
 	"github.com/stretchr/gomniauth/providers/google"
+	"github.com/stretchr/objx"
 )
 
 // set the active Avatar implementation
-var avatars Avatar = UseFileSystemAvatar
+var avatars Avatar = TryAvatars{
+	UseFileSystemAvatar,
+	UseAuthAvatar,
+	UseGravatar}
 
 // templ represents a single template
 type templateHandler struct {

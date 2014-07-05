@@ -4,10 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/stretchr/objx"
-
 	"github.com/gorilla/websocket"
 	"github.com/matryer/goblueprints/chapter1/trace"
+	"github.com/stretchr/objx"
 )
 
 type room struct {

@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"strings"
-
 	"net/http"
+	"strings"
 
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/objx"
