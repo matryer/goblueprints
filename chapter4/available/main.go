@@ -17,13 +17,13 @@ func main() {
 	s := bufio.NewScanner(os.Stdin)
 	for s.Scan() {
 
-		domain := s.Text() + ".com"
+		domain := s.Text()
 		fmt.Print(domain, " ")
 		exist, err := exists(domain)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		fmt.Println(marks[exist])
+		fmt.Println(marks[!exist])
 		time.Sleep(500 * time.Millisecond)
 
 	}
