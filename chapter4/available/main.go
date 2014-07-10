@@ -13,10 +13,8 @@ import (
 var marks = map[bool]string{true: "✓", false: "✗"}
 
 func main() {
-
 	s := bufio.NewScanner(os.Stdin)
 	for s.Scan() {
-
 		domain := s.Text()
 		fmt.Print(domain, " ")
 		exist, err := exists(domain)
@@ -24,10 +22,8 @@ func main() {
 			log.Fatalln(err)
 		}
 		fmt.Println(marks[!exist])
-		time.Sleep(500 * time.Millisecond)
-
+		time.Sleep(1 * time.Second)
 	}
-
 }
 
 func exists(domain string) (bool, error) {
