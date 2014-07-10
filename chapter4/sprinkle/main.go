@@ -13,6 +13,9 @@ const otherWord = "*"
 
 var transforms = []string{
 	otherWord,
+	otherWord,
+	otherWord,
+	otherWord,
 	otherWord + "app",
 	otherWord + "site",
 	otherWord + "time",
