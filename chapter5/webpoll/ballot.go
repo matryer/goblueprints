@@ -76,9 +76,8 @@ func (bs Ballots) Start(options []string) (<-chan string, error) {
 
 // Stop stops all Ballots from collecting votes and causes
 // the channel returned from Start to be closed.
-func (bs Ballots) Stop() error {
+func (bs Ballots) Stop() {
 	for _, ballot := range bs {
 		ballot.Stop()
 	}
-	return nil
 }

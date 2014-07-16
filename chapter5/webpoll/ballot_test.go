@@ -16,8 +16,9 @@ type TestBallot struct {
 	ShouldErr bool
 }
 
-// TestBallot must implement webpoll.Ballot
+// TestBallot and webpoll.Ballots must implement webpoll.Ballot
 var _ webpoll.Ballot = (*TestBallot)(nil)
+var _ webpoll.Ballot = (webpoll.Ballots)(nil)
 
 func (b *TestBallot) Start(options []string) (<-chan string, error) {
 	b.out = make(chan string)
