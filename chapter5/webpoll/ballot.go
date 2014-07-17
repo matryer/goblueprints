@@ -81,3 +81,14 @@ func (bs Ballots) Stop() {
 		ballot.Stop()
 	}
 }
+
+// Count counts the votes that come in on the channel.
+// Blocks and returns a map[string]int of the results when the
+// channel is closed.
+func Count(votes <-chan string) map[string]int {
+	results := make(map[string]int)
+	for vote := range votes {
+		results[vote]++
+	}
+	return results
+}

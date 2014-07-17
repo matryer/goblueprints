@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/matryer/goblueprints/chapter5/webpoll"
-	"github.com/stretchr/testify/assert"
 )
 
 var ErrTest = errors.New("This is a test error")
@@ -45,7 +44,7 @@ func TestBallotImpl(t *testing.T) {
 		t.Error("Ballots.Start should return a channel")
 	}
 
-	// stop after 1 second
+	// stop after 1/2 second
 	go func() {
 		time.Sleep(500 * time.Millisecond)
 		b.Stop()
@@ -84,8 +83,12 @@ func TestManyBallotStartErr(t *testing.T) {
 	bs := webpoll.Ballots([]webpoll.Ballot{b1, b2, b3})
 	out, err := bs.Start([]string{"one", "two", "three"})
 
-	assert.Equal(t, ErrTest, err)
-	assert.Nil(t, out)
+	if err != ErrTest {
+		t.Error("Expected ErrTest error")
+	}
+	if out != nil {
+		t.Error("No channel expected if an error occurred")
+	}
 
 }
 
@@ -102,7 +105,7 @@ func TestManyBallot(t *testing.T) {
 		t.Error("Ballots.Start should return a channel")
 	}
 
-	// stop after 1 second
+	// stop after 1/2 second
 	go func() {
 		time.Sleep(500 * time.Millisecond)
 		bs.Stop()
@@ -131,6 +134,53 @@ func TestManyBallot(t *testing.T) {
 	}
 	if voteCount["three"] != 3 {
 		t.Error("Expected 3 x three")
+	}
+
+}
+
+func TestCount(t *testing.T) {
+
+	b1 := &TestBallot{}
+	b2 := &TestBallot{}
+	b3 := &TestBallot{}
+
+	bs := webpoll.Ballots([]webpoll.Ballot{b1, b2, b3})
+	out, _ := bs.Start([]string{"one", "two", "three"})
+
+	// stop after 1/2 second
+	go func() {
+		time.Sleep(500 * time.Millisecond)
+		bs.Stop()
+	}()
+
+	// simulate real concurrent data
+	go func() {
+		b1.Vote("three")
+		b3.Vote("five")
+		b1.Vote("two")
+		b1.Vote("five")
+	}()
+	go func() {
+		b2.Vote("three")
+		b3.Vote("five")
+		b2.Vote("five")
+	}()
+	go func() {
+		b3.Vote("three")
+		b3.Vote("two")
+		b3.Vote("five")
+	}()
+
+	results := webpoll.Count(out)
+
+	if results["three"] != 3 {
+		t.Error("Expected 3x'three', but there was", results["three"])
+	}
+	if results["two"] != 2 {
+		t.Error("Expected 2x'two', but there was", results["two"])
+	}
+	if results["five"] != 5 {
+		t.Error("Expected 5x'five', but there was", results["five"])
 	}
 
 }
