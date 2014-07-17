@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/matryer/goblueprints/chapter5/webpoll"
 
@@ -22,9 +24,57 @@ import (
 */
 
 var (
-	options = flag.String("options", "", "Comma separated list of poll options")
-	sources = flag.String("sources", "twitter", "Comma separated list of ballot sources")
+	optionsFlg = flag.String("options", "", "Comma separated list of poll options")
+	sourcesFlg = flag.String("sources", "twitter", "Comma separated list of ballot sources")
+	outputFlg  = flag.String("out", "./votes.json", "Output file for results")
+	refresh    = flag.Int64("refresh", 10, "Seconds between updating the out results file")
 )
+
+func main() {
+
+	flag.Parse()
+
+	options := strings.Split(*optionsFlg, ",")
+	if len(options) < 2 {
+		fatal("Must provide at least two options.")
+	}
+
+	ballots := ballots()
+	if len(ballots) == 0 {
+		fatal("Need at least one source.")
+	}
+
+	votes, err := ballots.Start(options)
+	if err != nil {
+		fatal(err)
+	}
+	counter := new(webpoll.Counter)
+
+	go func() {
+		for vote := range counter.Count(votes) {
+			fmt.Print(vote + " ")
+		}
+	}()
+
+	// keep updating the results
+	for {
+
+		// wait
+		time.Sleep(time.Duration(*refresh) * time.Second)
+
+		// write the outputs
+		results := counter.Results()
+		resultsJson, _ := json.Marshal(results)
+		if outFile, err := os.Create(*outputFlg); err == nil {
+			outFile.Write(resultsJson)
+			outFile.Close()
+		} else {
+			fmt.Println("couldn't open", *outputFlg, "-", err)
+		}
+
+	}
+
+}
 
 type twitterSettings struct {
 	ConsumerKey    string `env:"WEBPOLL_TWITTER_KEY,required"`
@@ -33,18 +83,11 @@ type twitterSettings struct {
 	AccessSecret   string `env:"WEBPOLL_TWITTER_ACCESSSECRET,required"`
 }
 
-func main() {
-
-	flag.Parse()
-
-	options := strings.Split(*options, ",")
-	if len(options) < 2 {
-		fatal("Must provide at least two options.")
-	}
+func ballots() webpoll.Ballots {
 
 	var ballots webpoll.Ballots
 
-	if strings.Contains(*sources, "twitter") {
+	if strings.Contains(*sourcesFlg, "twitter") {
 
 		var ts twitterSettings
 		if err := envdecode.Decode(&ts); err != nil {
@@ -59,6 +102,7 @@ func main() {
 
 	}
 
+	return ballots
 }
 
 func fatal(a ...interface{}) {
