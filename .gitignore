@@ -65,3 +65,7 @@ chapter4/domainfinder/lib/sprinkle
 chapter4/domainfinder/lib/synonyms
 
 chapter5/webpoll/cmd/webpoll
+
+chapter5/webpoll/cmd/setup.sh
+
+chapter5/webpoll/cmd/votes.json
