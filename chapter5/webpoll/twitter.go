@@ -45,7 +45,7 @@ func NewTwitterBallot(consumerKey, consumerSecret, accessToken, accessSecret str
 func (t *TwitterBallot) Start(options []string) (<-chan string, error) {
 
 	for i, _ := range options {
-		options[i] = strings.ToLower(options[i])
+		options[i] = "#" + strings.ToLower(options[i])
 	}
 
 	form := url.Values{"track": {strings.Join(options, ",")}}
