@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -45,11 +44,14 @@ func NewTwitterBallot(consumerKey, consumerSecret, accessToken, accessSecret str
 
 func (t *TwitterBallot) Start(options []string) (<-chan string, error) {
 
+	lowerOpts := make([]string, len(options))
+	hashtags := make([]string, len(options))
 	for i, _ := range options {
-		options[i] = "#" + strings.ToLower(options[i])
+		lowerOpts[i] = strings.ToLower(options[i])
+		hashtags[i] = "#" + lowerOpts[i]
 	}
 
-	form := url.Values{"track": {strings.Join(options, ",")}}
+	form := url.Values{"track": {strings.Join(hashtags, ",")}}
 	formEnc := form.Encode()
 	u, _ := url.Parse("https://stream.twitter.com/1.1/statuses/filter.json")
 	req, err := http.NewRequest("POST", u.String(), strings.NewReader(formEnc))
@@ -64,6 +66,10 @@ func (t *TwitterBallot) Start(options []string) (<-chan string, error) {
 	client := &http.Client{
 		Transport: &http.Transport{
 			Dial: func(netw, addr string) (net.Conn, error) {
+				if t.conn != nil {
+					t.conn.Close()
+					t.conn = nil
+				}
 				netc, err := net.DialTimeout(netw, addr, 1*time.Minute)
 				if err != nil {
 					return nil, err
@@ -74,33 +80,53 @@ func (t *TwitterBallot) Start(options []string) (<-chan string, error) {
 		},
 	}
 
+	t.out = make(chan string)
+
+	// open the first connection
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		body, _ := ioutil.ReadAll(resp.Body)
 		resp.Body.Close()
-		return nil, fmt.Errorf("Twitter filter failed (%d): %s", resp.StatusCode, body)
+		return nil, fmt.Errorf("Twitter filter failed: %d", resp.StatusCode)
 	}
-
-	t.reader = resp.Body
-	decoder := json.NewDecoder(t.reader)
-
-	t.out = make(chan string)
 
 	go func() {
 		for {
-			var tweet *tweet
-			if err := decoder.Decode(&tweet); err != nil {
-				return
-			} else {
-				for _, option := range options {
-					if strings.Contains(strings.ToLower(tweet.Text), option) {
-						t.out <- option
-					}
+
+			// if we have no response - make a new connection
+			if resp == nil {
+				resp, err := client.Do(req)
+				if err != nil {
+					continue
+				}
+				if resp.StatusCode != 200 {
+					continue
 				}
 			}
+
+			t.reader = resp.Body
+			decoder := json.NewDecoder(t.reader)
+
+			for {
+				var tweet *tweet
+				if err := decoder.Decode(&tweet); err == nil {
+					for i, option := range lowerOpts {
+						if strings.Contains(strings.ToLower(tweet.Text), option) {
+							t.out <- options[i]
+						}
+					}
+				} else {
+					// connection probably died - reconnect
+					resp = nil
+					break
+				}
+			}
+
+			// give the service some time to recover
+			time.Sleep(30 * time.Second)
+
 		}
 	}()
 
