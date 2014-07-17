@@ -145,7 +145,7 @@ func TestCount(t *testing.T) {
 	b3 := &TestBallot{}
 
 	bs := webpoll.Ballots([]webpoll.Ballot{b1, b2, b3})
-	out, _ := bs.Start([]string{"one", "two", "three"})
+	out, _ := bs.Start([]string{"two", "three", "five", "none"})
 
 	// stop after 1/2 second
 	go func() {
@@ -181,6 +181,9 @@ func TestCount(t *testing.T) {
 	}
 	if results["five"] != 5 {
 		t.Error("Expected 5x'five', but there was", results["five"])
+	}
+	if results["none"] != 0 {
+		t.Error("Expected 0x'none', but there was", results["five"])
 	}
 
 }
