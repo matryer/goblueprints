@@ -86,9 +86,44 @@ func (bs Ballots) Stop() {
 // Blocks and returns a map[string]int of the results when the
 // channel is closed.
 func Count(votes <-chan string) map[string]int {
-	results := make(map[string]int)
-	for vote := range votes {
-		results[vote]++
+	counter := new(Counter)
+	for _ = range counter.Count(votes) {
 	}
-	return results
+	return counter.Results()
+}
+
+// Counter allows you to count the votes inline.
+type Counter struct {
+	results  map[string]int
+	resultsX sync.Mutex
+	out      chan string
+}
+
+// Count starts counting the votes from the channel and returns
+// a new channel through which each vote will be sent.
+func (c *Counter) Count(votes <-chan string) <-chan string {
+	c.out = make(chan string)
+	c.results = make(map[string]int)
+	go func() {
+		for vote := range votes {
+			c.resultsX.Lock()
+			c.results[vote]++ // increase the count
+			c.resultsX.Unlock()
+			c.out <- vote // send it out
+		}
+		c.Stop()
+	}()
+	return c.out
+}
+
+// Results gets the current results from the counting.
+func (c *Counter) Results() map[string]int {
+	c.resultsX.Lock()
+	defer c.resultsX.Unlock()
+	return c.results
+}
+
+// Stop stops counting.
+func (c *Counter) Stop() {
+	close(c.out)
 }

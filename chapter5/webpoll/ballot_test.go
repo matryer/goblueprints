@@ -33,7 +33,9 @@ func (b *TestBallot) Stop() {
 	close(b.out)
 }
 func (b *TestBallot) Vote(option string) {
-	b.out <- option
+	select {
+	case b.out <- option:
+	}
 }
 
 func TestBallotImpl(t *testing.T) {
@@ -173,6 +175,61 @@ func TestCount(t *testing.T) {
 
 	results := webpoll.Count(out)
 
+	if results["three"] != 3 {
+		t.Error("Expected 3x'three', but there was", results["three"])
+	}
+	if results["two"] != 2 {
+		t.Error("Expected 2x'two', but there was", results["two"])
+	}
+	if results["five"] != 5 {
+		t.Error("Expected 5x'five', but there was", results["five"])
+	}
+	if results["none"] != 0 {
+		t.Error("Expected 0x'none', but there was", results["five"])
+	}
+
+}
+
+func TestCounter(t *testing.T) {
+
+	b1 := &TestBallot{}
+	b2 := &TestBallot{}
+	b3 := &TestBallot{}
+
+	bs := webpoll.Ballots([]webpoll.Ballot{b1, b2, b3})
+	out, _ := bs.Start([]string{"two", "three", "five", "none"})
+
+	// stop after 1/2 second
+	go func() {
+		time.Sleep(1 * time.Second)
+		bs.Stop()
+	}()
+
+	// simulate real concurrent data
+	go func() {
+		b1.Vote("three")
+		b3.Vote("five")
+		b1.Vote("two")
+		b1.Vote("five")
+	}()
+	go func() {
+		b2.Vote("five")
+		b3.Vote("two")
+		b2.Vote("five")
+	}()
+	go func() {
+		b3.Vote("five")
+		b3.Vote("three")
+		b3.Vote("three")
+	}()
+
+	counter := new(webpoll.Counter)
+	var countedVotes []string
+	for vote := range counter.Count(out) {
+		countedVotes = append(countedVotes, vote)
+	}
+
+	results := counter.Results()
 	if results["three"] != 3 {
 		t.Error("Expected 3x'three', but there was", results["three"])
 	}
