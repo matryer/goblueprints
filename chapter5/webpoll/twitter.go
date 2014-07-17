@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -107,9 +108,13 @@ func (t *TwitterBallot) Start(options []string) (<-chan string, error) {
 }
 
 func (t *TwitterBallot) Stop() {
-	if t.reader != nil {
-		t.reader.Close()
+	if err := t.conn.Close(); err != nil {
+		log.Println("ERROR: Failed to close conn:", err)
 	}
-	t.conn.Close()
+	if t.reader != nil {
+		if err := t.reader.Close(); err != nil {
+			log.Println("ERROR: Failed to close connection reader:", err)
+		}
+	}
 	close(t.out)
 }
