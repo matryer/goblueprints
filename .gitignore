@@ -69,3 +69,9 @@ chapter5/webpoll/cmd/webpoll
 chapter5/webpoll/cmd/setup.sh
 
 chapter5/webpoll/cmd/votes.json
+
+chapter5/webpoll/cli/webpoll
+
+chapter5/webpoll/cli/votes.json
+
+chapter5/webpoll/cli/setup.sh

@@ -87,7 +87,7 @@ func (bs Ballots) Stop() {
 // channel is closed.
 func Count(votes <-chan string) map[string]int {
 	counter := new(Counter)
-	for _ = range counter.Count(votes) {
+	for _ = range counter.CountVotes(votes) {
 	}
 	return counter.Results()
 }
@@ -95,20 +95,29 @@ func Count(votes <-chan string) map[string]int {
 // Counter allows you to count the votes inline.
 type Counter struct {
 	results  map[string]int
-	resultsX sync.Mutex
+	resultsM sync.Mutex
 	out      chan string
 }
 
-// Count starts counting the votes from the channel and returns
+// Start starts counting the votes from the channel.
+func (c *Counter) Start(votes <-chan string) {
+	go func() {
+		// read and throw away the votes
+		for _ = range c.CountVotes(votes) {
+		}
+	}()
+}
+
+// CountVotes starts counting the votes from the channel and returns
 // a new channel through which each vote will be sent.
-func (c *Counter) Count(votes <-chan string) <-chan string {
+func (c *Counter) CountVotes(votes <-chan string) <-chan string {
 	c.out = make(chan string)
 	c.results = make(map[string]int)
 	go func() {
 		for vote := range votes {
-			c.resultsX.Lock()
+			c.resultsM.Lock()
 			c.results[vote]++ // increase the count
-			c.resultsX.Unlock()
+			c.resultsM.Unlock()
 			c.out <- vote // send it out
 		}
 		c.Stop()
@@ -116,14 +125,16 @@ func (c *Counter) Count(votes <-chan string) <-chan string {
 	return c.out
 }
 
-// Results gets the current results from the counting.
+// Results gets the current results of the counting.
 func (c *Counter) Results() map[string]int {
-	c.resultsX.Lock()
-	defer c.resultsX.Unlock()
+	c.resultsM.Lock()
+	defer c.resultsM.Unlock()
 	return c.results
 }
 
 // Stop stops counting.
+// Counting will automatically stop if the
+// channel it was started with closes.
 func (c *Counter) Stop() {
 	close(c.out)
 }

@@ -51,8 +51,8 @@ func main() {
 	counter := new(webpoll.Counter)
 
 	go func() {
-		for vote := range counter.Count(votes) {
-			fmt.Print(vote + " ")
+		for _ = range counter.CountVotes(votes) {
+			fmt.Print(".")
 		}
 	}()
 
@@ -68,6 +68,7 @@ func main() {
 		if outFile, err := os.Create(*outputFlg); err == nil {
 			outFile.Write(resultsJson)
 			outFile.Close()
+			fmt.Printf("\nUpdate: %s\n", string(resultsJson))
 		} else {
 			fmt.Println("couldn't open", *outputFlg, "-", err)
 		}

@@ -109,6 +109,7 @@ func (t *TwitterBallot) Start(options []string) (<-chan string, error) {
 			t.reader = resp.Body
 			decoder := json.NewDecoder(t.reader)
 
+			// keep reading
 			for {
 				var tweet *tweet
 				if err := decoder.Decode(&tweet); err == nil {
