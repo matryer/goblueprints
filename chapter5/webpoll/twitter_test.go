@@ -1,12 +1,6 @@
 package webpoll
 
-import (
-	"log"
-	"time"
-
-	"testing"
-)
-
+/*
 func XTestTwitterBallot(t *testing.T) {
 
 	ballots := Ballots{NewTwitterBallot("w7CAtRP9H8TbVsFMujy8K09CA", "94GO0Yi7Dl6kDSjDqOIu80fzcRESi1v6nz00ICBBl3JopsW58c", "29481227-WszI4ij0AZCfrQ7Gs3MVjdr1qsKJrWctMlc21x6ed", "czEnqnByEDC7nvlbo6G97Hym8KAkuSBc8ghWyTMthZOTV")}
@@ -24,3 +18,4 @@ func XTestTwitterBallot(t *testing.T) {
 	log.Println(Count(votes))
 
 }
+*/

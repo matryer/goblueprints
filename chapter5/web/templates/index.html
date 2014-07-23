@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebPoll</title>
+  <style>
+    * { margin:0; padding:0; }
+    ul { list-style: none; }
+    body { text-align: center; }
+    h2 { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <ul id="polls"></ul>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script>
+
+    var pollsEl;
+    function update() {
+      $.ajax("/polls.json", {
+        dataType:"json",
+        success:function(polls) {
+          for (i in polls) {
+            var poll = polls[i];
+            var elId = poll["_id"];
+            var el = pollsEl.find("#"+elId);
+            if (el.size() == 0) {
+              el = $("<li>")
+                .attr("id", elId)
+                .append($("<h2/>"))
+                .append($("<img>"))
+                .appendTo(pollsEl)
+              ;
+            }
+            var data = chartData(poll);
+            el.find("h2").text(poll["_id"] + " (" + data.total + ")");
+            el.find("img").attr("src", data.img);
+          }
+        }}
+      );
+      window.setTimeout(update, 1000);
+    }
+
+    function chartData(poll) {
+      var chd = [];
+      var chl = [];
+      var total = 0;
+      for (var option in poll) {
+        if (option[0] == "_") continue;
+        total += poll[option];
+      }
+      for (var option in poll) {
+        if (option[0] == "_") continue;
+        chd.push(Math.floor(100 / (total / poll[option])));
+        chl.push(option + " (" + poll[option] + ")");
+      }
+      return {
+        total: total,
+        img: "https://chart.googleapis.com/chart?chds=a&cht=p&chs=500x300&chd=t:" + chd.join(",") + "&chl=" + chl.join("|") + "&chco=660066"
+      }
+    }
+
+    $(function(){
+      pollsEl = $("#polls");
+      update();
+    });
+
+  </script>
+
+</body>
+</html>

@@ -75,3 +75,5 @@ chapter5/webpoll/cli/webpoll
 chapter5/webpoll/cli/votes.json
 
 chapter5/webpoll/cli/setup.sh
+
+chapter5/counter/counter
