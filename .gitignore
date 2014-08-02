@@ -77,3 +77,11 @@ chapter5/webpoll/cli/votes.json
 chapter5/webpoll/cli/setup.sh
 
 chapter5/counter/counter
+
+*.dat
+
+chapter5_old/webpoll/webpoll_to_nsq/setup.sh
+
+chapter5_old/counter/counter
+
+chapter5/poll/cmd/poll
