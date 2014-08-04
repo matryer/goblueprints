@@ -10,10 +10,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/bitly/go-nsq"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
-
-	"github.com/bitly/go-nsq"
 )
 
 /*
@@ -21,7 +20,7 @@ import (
   and adds the numbers to the polls in mongo
 */
 
-const updateDuration = 10 * time.Second
+const updateDuration = 1 * time.Second
 
 type pollItem struct {
 	Options map[string]int
@@ -71,7 +70,6 @@ func main() {
 		}
 		vote := string(m.Body)
 		counts[vote]++
-		fmt.Print(vote + " ")
 		return nil
 	}))
 

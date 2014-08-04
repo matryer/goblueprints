@@ -85,3 +85,7 @@ chapter5_old/webpoll/webpoll_to_nsq/setup.sh
 chapter5_old/counter/counter
 
 chapter5/poll/cmd/poll
+
+chapter5/web/web
+
+chapter5/twittervotes/twittervotes
