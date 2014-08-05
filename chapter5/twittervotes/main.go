@@ -40,7 +40,7 @@ type poll struct {
 	Options []string
 }
 type tweet struct {
-	Text string `json:"text"`
+	Text string //`json:"text"`
 }
 
 func closeConn() {
