@@ -14,34 +14,26 @@ import (
 	"syscall"
 	"time"
 
-	"labix.org/v2/mgo"
-
 	"github.com/bitly/go-nsq"
 	"github.com/joeshaw/envdecode"
 	"github.com/matryer/go-oauth/oauth"
+	"gopkg.in/mgo.v2"
 )
-
-type twitterSettings struct {
-	ConsumerKey    string `env:"WEBPOLL_TWITTER_KEY,required"`
-	ConsumerSecret string `env:"WEBPOLL_TWITTER_SECRET,required"`
-	AccessToken    string `env:"WEBPOLL_TWITTER_ACCESSTOKEN,required"`
-	AccessSecret   string `env:"WEBPOLL_TWITTER_ACCESSSECRET,required"`
-}
 
 var (
 	authClient *oauth.Client
 	creds      *oauth.Credentials
 	conn       net.Conn
-	reader     io.ReadCloser
-	filterForm string
 )
 
 type poll struct {
 	Options []string
 }
 type tweet struct {
-	Text string //`json:"text"`
+	Text string
 }
+
+var reader io.ReadCloser
 
 func closeConn() {
 	if conn != nil {
@@ -53,8 +45,12 @@ func closeConn() {
 }
 
 func main() {
-
-	var ts twitterSettings
+	var ts struct {
+		ConsumerKey    string `env:"SP_TWITTER_KEY,required"`
+		ConsumerSecret string `env:"SP_TWITTER_SECRET,required"`
+		AccessToken    string `env:"SP_TWITTER_ACCESSTOKEN,required"`
+		AccessSecret   string `env:"SP_TWITTER_ACCESSSECRET,required"`
+	}
 	if err := envdecode.Decode(&ts); err != nil {
 		log.Fatalln(err)
 	}
@@ -84,14 +80,9 @@ func main() {
 			Secret: ts.ConsumerSecret,
 		},
 	}
-
-	// handle stopping
 	twitterStopChan := make(chan struct{}, 1)
 	publisherStopChan := make(chan struct{}, 1)
 	stop := false
-	votes := make(chan string) // chan for votes
-
-	// handle Ctrl+C
 	signalChan := make(chan os.Signal, 1)
 	go func() {
 		<-signalChan
@@ -100,8 +91,7 @@ func main() {
 		closeConn()
 	}()
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
-
-	// publish votes on the "votes" channel
+	votes := make(chan string) // chan for votes
 	go func() {
 		pub, _ := nsq.NewProducer("localhost:4150", nsq.NewConfig())
 		for vote := range votes {
@@ -112,42 +102,32 @@ func main() {
 		log.Println("Publisher: Stopped")
 		publisherStopChan <- struct{}{}
 	}()
-
-	// read tweets
 	go func() {
 		defer func() {
 			twitterStopChan <- struct{}{}
 		}()
 		for {
-
 			if stop {
 				log.Println("Twitter: Stopped")
 				return
 			}
-
-			log.Println("Twitter: Waiting...")
-			// wait so we don't overwhelm Twitter
-			time.Sleep(2 * time.Second)
-			log.Println("Twitter: Renewing")
-
+			time.Sleep(2 * time.Second) // calm
 			var options []string
 			db, err := mgo.Dial("localhost")
 			if err != nil {
 				log.Fatalln(err)
 			}
-			defer db.Close()
 			iter := db.DB("ballots").C("polls").Find(nil).Iter()
 			var p poll
 			for iter.Next(&p) {
 				options = append(options, p.Options...)
 			}
 			iter.Close()
+			db.Close()
 
-			lowerOpts := make([]string, len(options))
 			hashtags := make([]string, len(options))
 			for i := range options {
-				lowerOpts[i] = strings.ToLower(options[i])
-				hashtags[i] = "#" + lowerOpts[i]
+				hashtags[i] = "#" + strings.ToLower(options[i])
 			}
 
 			form := url.Values{"track": {strings.Join(hashtags, ",")}}
@@ -167,21 +147,23 @@ func main() {
 				log.Println("Error getting response:", err)
 				continue
 			}
-			if resp.StatusCode != 200 {
+			if resp.StatusCode != http.StatusOK {
 				log.Println("StatusCode =", resp.StatusCode)
 				continue
 			}
 
 			reader = resp.Body
 			decoder := json.NewDecoder(reader)
-
-			// keep reading
 			for {
-				var tweet *tweet
+				var tweet tweet
 				if err := decoder.Decode(&tweet); err == nil {
-					for i, option := range lowerOpts {
-						if strings.Contains(strings.ToLower(tweet.Text), option) {
-							votes <- options[i]
+					for _, option := range options {
+						if strings.Contains(
+							strings.ToLower(tweet.Text),
+							strings.ToLower(option),
+						) {
+							log.Println("vote:", option)
+							votes <- option
 						}
 					}
 				} else {
@@ -204,10 +186,8 @@ func main() {
 		}
 	}()
 
-	// wait for everything to stop
 	<-twitterStopChan // important to avoid panic
 	close(votes)
 	<-publisherStopChan
-	log.Println("Everything: stopped")
 
 }

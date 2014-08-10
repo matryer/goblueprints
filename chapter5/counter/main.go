@@ -15,15 +15,14 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-/*
-  counter tool looks for votes on the "votes" nsq topic
-  and adds the numbers to the polls in mongo
-*/
-
 const updateDuration = 1 * time.Second
 
-type pollItem struct {
-	Options map[string]int
+var fatalErr error
+
+func fatal(e error) {
+	fmt.Println(e)
+	flag.PrintDefaults()
+	fatalErr = e
 }
 
 func main() {
@@ -34,10 +33,6 @@ func main() {
 		}
 	}()
 
-	termChan := make(chan os.Signal, 1)
-	signal.Notify(termChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
-
-	// connect to the database
 	log.Println("Connecting to database...")
 	db, err := mgo.Dial("localhost")
 	if err != nil {
@@ -50,7 +45,9 @@ func main() {
 	}()
 	pollData := db.DB("ballots").C("polls")
 
-	// listen for votes
+	var counts map[string]int
+	var countsLock sync.Mutex
+
 	log.Println("Connecting to nsq...")
 	q, err := nsq.NewConsumer("votes", "counter", nsq.NewConfig())
 	if err != nil {
@@ -58,10 +55,6 @@ func main() {
 		return
 	}
 
-	var counts map[string]int
-	var countsLock sync.Mutex
-
-	// when we see a vote...
 	q.AddHandler(nsq.HandlerFunc(func(m *nsq.Message) error {
 		countsLock.Lock()
 		defer countsLock.Unlock()
@@ -75,14 +68,10 @@ func main() {
 
 	if err := q.ConnectToNSQLookupd("localhost:4161"); err != nil {
 		fatal(err)
-		q.Stop()
-		<-q.StopChan
 		return
 	}
 
 	log.Println("Waiting for votes on nsq...")
-
-	// push to the database every updateDuration
 	var updater *time.Timer
 	updater = time.AfterFunc(updateDuration, func() {
 		countsLock.Lock()
@@ -90,22 +79,27 @@ func main() {
 		if len(counts) == 0 {
 			log.Println("No new votes, skipping database update")
 		} else {
-			fmt.Println()
 			log.Println("Updating database...")
 			log.Println(counts)
+			ok := true
 			for option, count := range counts {
 				sel := bson.M{"options": bson.M{"$in": []string{option}}}
 				up := bson.M{"$inc": bson.M{"results." + option: count}}
-				if err := pollData.Update(sel, up); err != nil {
+				if _, err := pollData.UpdateAll(sel, up); err != nil {
 					log.Println("failed to update:", err)
+					ok = false
 				}
 			}
-			log.Println("Finished updating database...")
-			counts = nil // reset counts
+			if ok {
+				log.Println("Finished updating database...")
+				counts = nil // reset counts
+			}
 		}
 		updater.Reset(updateDuration)
 	})
 
+	termChan := make(chan os.Signal, 1)
+	signal.Notify(termChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	for {
 		select {
 		case <-termChan:
@@ -117,12 +111,4 @@ func main() {
 		}
 	}
 
-}
-
-var fatalErr error
-
-func fatal(e error) {
-	fmt.Println(e)
-	flag.PrintDefaults()
-	fatalErr = e
 }
