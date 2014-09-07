@@ -30,7 +30,6 @@ func handlePolls(w http.ResponseWriter, r *http.Request) {
 			// get all polls
 			q = c.Find(nil)
 		}
-
 		var result []*poll
 		if err := q.All(&result); err != nil {
 			respondErr(w, r, err)

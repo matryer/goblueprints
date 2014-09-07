@@ -4,13 +4,18 @@ import (
 	"strings"
 )
 
+// PathSeparator is the character used to separate
+// HTTP paths.
 const PathSeparator = "/"
 
+// Path represents the path of a request.
 type Path struct {
 	Path string
 	ID   string
 }
 
+// NewPath makes a new Path from the specified
+// path string.
 func NewPath(p string) *Path {
 	var id string
 	p = strings.Trim(p, PathSeparator)
@@ -22,6 +27,8 @@ func NewPath(p string) *Path {
 	return &Path{Path: p, ID: id}
 }
 
+// HasID gets whether this path has an ID
+// or not.
 func (p *Path) HasID() bool {
 	return len(p.ID) > 0
 }
