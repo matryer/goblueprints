@@ -20,19 +20,18 @@ Each chapter has its own section which it is recommended that you read _before_ 
 ### Chapter 1
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter1)
-  
-### Chapter 2
-  
-  * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter2)
-  
-### Chapter 3
-  
-  * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter3)
-  
-### Chapter 4
-  
-  * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter4)
 
+### Chapter 2
+
+  * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter2)
+
+### Chapter 3
+
+  * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter3)
+
+### Chapter 4
+
+  * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter4)
 
 ## Appendixes
 
