@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>View Poll</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <h1 data-field="title">...</h1>
+      <ul id="options"></ul>
+      <div id="chart"></div>
+      <div>
+        <button class="btn btn-sm" id="delete">Delete this poll</button>
+      </div>
+    </div>
+    <div class="col-md-4"></div>
+  </div>
+  <script src="//www.google.com/jsapi"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script>
+    google.load('visualization', '1.0', {'packages':['corechart']});
+    google.setOnLoadCallback(function(){
+      $(function(){
+        var chart;
+        var poll = location.href.split("poll=")[1];
+        $("#delete").click(function(){
+          if (confirm("Sure?")) {
+            $.ajax({
+              url:"http://localhost:8080/"+poll+"?key=abc123",
+              type:"DELETE"
+            })
+              .done(function(){
+                location.href = "/";
+              })
+          }
+        });
+        var update = function(){
+          $.get("http://localhost:8080/"+poll+"?key=abc123", null, null, "json")
+            .done(function(polls){
+              var poll = polls[0];
+              $('[data-field="title"]').text(poll.title);
+              $("#options").empty();
+              for (var o in poll.results) {
+                $("#options").append(
+                  $("<li>").append(
+                    $("<small>").addClass("label label-default").text(poll.results[o]),
+                    " ", o
+                  )
+                )
+              }
+              if (poll.results) {
+                var data = new google.visualization.DataTable();
+                data.addColumn("string","Option");
+                data.addColumn("number","Votes");
+                for (var o in poll.results) {
+                  data.addRow([o, poll.results[o]])
+                }
+                if (!chart) {
+                  chart = new google.visualization.PieChart(document.getElementById('chart'));
+                }
+                chart.draw(data, {is3D: true});
+              }
+            }
+          );
+          window.setTimeout(update, 1000);
+        };
+        update();
+      });
+    });
+  </script>
+</body>
+</html>

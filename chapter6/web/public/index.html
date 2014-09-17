@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Polls</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <h1>Polls</h1>
+      <ul id="polls"></ul>
+      <a href="new.html" class="btn btn-primary">Create new poll</a>
+    </div>
+    <div class="col-md-4"></div>
+  </div>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script>
+    $(function(){
+      var update = function(){
+        $.get("http://localhost:8080/polls/?key=abc123", null, null, "json")
+          .done(function(polls){
+            $("#polls").empty();
+            for (var p in polls) {
+              var poll = polls[p];
+              $("#polls").append(
+                $("<li>").append(
+                  $("<a>")
+                    .attr("href", "view.html?poll=polls/" + poll.id)
+                    .text(poll.title)
+                )
+              )
+            }
+          }
+        );
+        window.setTimeout(update, 10000);
+      }
+      update();
+    });
+  </script>
+</body>
+</html>

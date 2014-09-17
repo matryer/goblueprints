@@ -9,8 +9,9 @@ import (
 
 type poll struct {
 	ID      bson.ObjectId  `bson:"_id" json:"id"`
+	Title   string         `json:"title" bson:"title"`
 	Options []string       `json:"options"`
-	Results map[string]int `json:"results"`
+	Results map[string]int `json:"results,omitempty"`
 }
 
 func handlePolls(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +33,7 @@ func handlePolls(w http.ResponseWriter, r *http.Request) {
 		}
 		var result []*poll
 		if err := q.All(&result); err != nil {
-			respondErr(w, r, err)
+			respondErr(w, r, http.StatusInternalServerError, err)
 			return
 		}
 		respond(w, r, http.StatusOK, &result)
@@ -42,20 +43,37 @@ func handlePolls(w http.ResponseWriter, r *http.Request) {
 
 		var p poll
 		if err := decodeBody(r, &p); err != nil {
-			respondErr(w, r, "failed to read poll from request", err)
+			respondErr(w, r, http.StatusBadRequest, "failed to read poll from request", err)
 			return
 		}
 		p.ID = bson.NewObjectId()
 		if err := c.Insert(p); err != nil {
-			respondErr(w, r, "failed to insert poll", err)
+			respondErr(w, r, http.StatusInternalServerError, "failed to insert poll", err)
 			return
 		}
 		w.Header().Set("Location", "polls/"+p.ID.Hex())
 		respond(w, r, http.StatusCreated, nil)
 		return
+
+	case "DELETE":
+
+		p := NewPath(r.URL.Path)
+		if !p.HasID() {
+			respondErr(w, r, http.StatusMethodNotAllowed, "Cannot delete all polls.")
+			return
+		}
+		if err := c.RemoveId(bson.ObjectIdHex(p.ID)); err != nil {
+			respondErr(w, r, http.StatusInternalServerError, "failed to delete poll", err)
+			return
+		}
+		respond(w, r, http.StatusOK, nil) // ok
+
+	case "OPTIONS":
+		w.Header().Add("Access-Control-Allow-Methods", "DELETE")
+		respond(w, r, http.StatusOK, nil)
 	}
 
 	// not found
-	respondNotFound(w, r)
+	respondHTTPErr(w, r, http.StatusNotFound)
 
 }

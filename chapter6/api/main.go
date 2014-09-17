@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -24,16 +22,32 @@ func main() {
 	}
 	defer db.Close()
 	mux := http.NewServeMux()
-	mux.HandleFunc("/polls/", withData(db, withAPIKey(handlePolls)))
+	mux.HandleFunc("/polls/", withCORS(withVars(withData(db, withAPIKey(handlePolls)))))
 	log.Println("Starting web server on", *addr)
 	graceful.Run(*addr, 1*time.Second, mux)
 	log.Println("Stopping...")
 }
 
+func withCORS(fn http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Expose-Headers", "Location")
+		fn(w, r)
+	}
+}
+
+func withVars(fn http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		OpenVars(r)
+		defer CloseVars(r)
+		fn(w, r)
+	}
+}
+
 func withAPIKey(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if !isValidAPIKey(r.URL.Query().Get("key")) {
-			respondErr(w, r, "invalid API key", nil)
+			respondErr(w, r, http.StatusUnauthorized, "invalid API key")
 			return
 		}
 		fn(w, r)
@@ -47,35 +61,6 @@ func withData(db *mgo.Session, fn http.HandlerFunc) http.HandlerFunc {
 		SetVar(r, "db", thisDb.DB("ballots"))
 		fn(w, r)
 	}
-}
-
-func decodeBody(r *http.Request, v interface{}) error {
-	defer r.Body.Close()
-	return json.NewDecoder(r.Body).Decode(v)
-}
-func encodeBody(w http.ResponseWriter, r *http.Request, v interface{}) error {
-	return json.NewEncoder(w).Encode(v)
-}
-
-func respond(w http.ResponseWriter, r *http.Request, status int, data interface{}) {
-	w.WriteHeader(status)
-	if data != nil {
-		encodeBody(w, r, data)
-	}
-}
-func respondErr(w http.ResponseWriter, r *http.Request, args ...interface{}) {
-	respond(w, r, http.StatusInternalServerError, map[string]interface{}{
-		"error": map[string]interface{}{
-			"message": fmt.Sprint(args...),
-		},
-	})
-}
-func respondNotFound(w http.ResponseWriter, r *http.Request) {
-	respond(w, r, http.StatusNotFound, map[string]interface{}{
-		"error": map[string]interface{}{
-			"message": http.StatusText(http.StatusNotFound),
-		},
-	})
 }
 
 func isValidAPIKey(key string) bool {

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Poll</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="col-md-4"></div>
+    <form id="poll" role="form" class="col-md-4">
+      <h2>Create Poll</h2>
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="title" placeholder="Title">
+      </div>
+      <div class="form-group">
+        <label for="options">Options</label>
+        <input type="text" class="form-control" id="options" placeholder="Options">
+        <p class="help-block">Comma separated</p>
+      </div>
+      <button type="submit" class="btn btn-primary">Create Poll</button> or <a href="/">cancel</a>
+    </form>
+    <div class="col-md-4"></div>
+  </div>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script>
+    $(function(){
+      var form = $("form#poll");
+      form.submit(function(e){
+        e.preventDefault();
+        var title = form.find("input[id='title']").val();
+        var options = form.find("input[id='options']").val();
+        options = options.split(",");
+        for (var opt in options) {
+          options[opt] = options[opt].trim();
+        }
+        $.post("http://localhost:8080/polls/?key=abc123",
+          JSON.stringify({
+            title: title, options: options
+          })
+        ).fail(function(){
+          alert("Failed to create poll");
+        }).done(function(d, s, r){
+          location.href = "view.html?poll=" + r.getResponseHeader("Location");
+        });
+      });
+    });
+  </script>
+</body>
+</html>
