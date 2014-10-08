@@ -9,11 +9,11 @@ import (
 
 func TestCostValues(t *testing.T) {
 
-	require.Equal(t, int(meander.Cost1), 0)
-	require.Equal(t, int(meander.Cost2), 1)
-	require.Equal(t, int(meander.Cost3), 2)
-	require.Equal(t, int(meander.Cost4), 3)
-	require.Equal(t, int(meander.Cost5), 4)
+	require.Equal(t, int(meander.Cost1), 1)
+	require.Equal(t, int(meander.Cost2), 2)
+	require.Equal(t, int(meander.Cost3), 3)
+	require.Equal(t, int(meander.Cost4), 4)
+	require.Equal(t, int(meander.Cost5), 5)
 
 }
 

@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestEventJSON(t *testing.T) {
+func TestPlaceJSON(t *testing.T) {
 
 	var e meander.Place
 

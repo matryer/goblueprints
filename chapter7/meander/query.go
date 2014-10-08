@@ -10,12 +10,37 @@ import (
 	"time"
 )
 
+// APIKey is the Google Places API key that will be used
+// to make requests to the service.
 var APIKey string
 
+// Place represents a single place.
+type Place struct {
+	*googleGeometry `json:"geometry"`
+	Name            string         `json:"name"`
+	Icon            string         `json:"icon"`
+	Photos          []*googlePhoto `json:"photos"`
+	Vicinity        string         `json:"vicinity"`
+}
+
+// Public gets a public view of a Place.
+func (p *Place) Public() interface{} {
+	return map[string]interface{}{
+		"name":     p.Name,
+		"icon":     p.Icon,
+		"photos":   p.Photos,
+		"vicinity": p.Vicinity,
+		"lat":      p.Lat,
+		"lng":      p.Lng,
+	}
+}
+
+// Query represents a runnable Query against the
+// Google Places API.
 type Query struct {
 	Lat          float64
 	Lng          float64
-	Route        []string
+	Journey      []string
 	Radius       int
 	CostRangeStr string
 }
@@ -27,9 +52,8 @@ func (q *Query) find(types string) (*googleResponse, error) {
 	u = fmt.Sprintf("%s&key=%s", u, APIKey)
 	if len(q.CostRangeStr) > 0 {
 		r := ParseCostRange(q.CostRangeStr)
-		u = fmt.Sprintf("%s&minprice=%d&maxprice=%d", u, int(r.From), int(r.To))
+		u = fmt.Sprintf("%s&minprice=%d&maxprice=%d", u, int(r.From)-1, int(r.To)-1)
 	}
-	log.Println(u)
 	res, err := http.Get(u)
 	if err != nil {
 		return nil, err
@@ -42,12 +66,13 @@ func (q *Query) find(types string) (*googleResponse, error) {
 	return &response, nil
 }
 
-func (q *Query) Run() []*Place {
+// Run runs the query concurrently, and returns the results.
+func (q *Query) Run() []interface{} {
 	rand.Seed(time.Now().UnixNano())
 	var w sync.WaitGroup
-	var eventsL sync.Mutex
-	events := make([]*Place, len(q.Route))
-	for i, r := range q.Route {
+	var placesL sync.Mutex
+	places := make([]interface{}, len(q.Journey))
+	for i, r := range q.Journey {
 		w.Add(1)
 		go func(types string, i int) {
 			defer w.Done()
@@ -66,25 +91,18 @@ func (q *Query) Run() []*Place {
 						"maxwidth=400&photoreference=" + photo.PhotoRef + "&key=" + APIKey
 				}
 			}
-			eventsL.Lock()
-			defer eventsL.Unlock()
+			placesL.Lock()
+			defer placesL.Unlock()
 			randI := rand.Intn(len(response.Results))
-			events[i] = response.Results[randI]
+			places[i] = response.Results[randI]
 		}(r, i)
 	}
 	w.Wait() // wait for everything to finish
-	return events
+	return places
 }
 
 type googleResponse struct {
 	Results []*Place `json:"results"`
-}
-type Place struct {
-	Name            string `json:"name"`
-	Icon            string `json:"icon"`
-	*googleGeometry `json:"geometry"`
-	Photos          []*googlePhoto `json:"photos"`
-	Vicinity        string         `json:"vicinity"`
 }
 type googleGeometry struct {
 	*googleLocation `json:"location"`
@@ -95,7 +113,7 @@ type googleLocation struct {
 }
 type googlePhoto struct {
 	Height   int    `json:"height"`
-	Width    int    `json:"Width"`
+	Width    int    `json:"width"`
 	PhotoRef string `json:"photo_reference"`
 	URL      string `json:"url"`
 }

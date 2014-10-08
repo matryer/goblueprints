@@ -4,24 +4,42 @@ import (
 	"strings"
 )
 
+// Cost represents a cost level.
 type Cost int8
 
+// Cost enumerator represents various levels of Cost.
 const (
-	Cost1 Cost = iota
+	_ Cost = iota
+	Cost1
 	Cost2
 	Cost3
 	Cost4
 	Cost5
 )
 
+var costStrings = map[string]Cost{
+	"$":     Cost1,
+	"$$":    Cost2,
+	"$$$":   Cost3,
+	"$$$$":  Cost4,
+	"$$$$$": Cost5,
+}
+
 func (l Cost) String() string {
-	return strings.Repeat("$", int(l)+1)
+	for s, v := range costStrings {
+		if l == v {
+			return s
+		}
+	}
+	return "invalid"
 }
 
+// ParseCost parses the cost string into a Cost type.
 func ParseCost(s string) Cost {
-	return Cost(len(s)) - 1
+	return costStrings[s]
 }
 
+// CostRange represents a range of Cost values.
 type CostRange struct {
 	From Cost
 	To   Cost
@@ -31,6 +49,7 @@ func (r CostRange) String() string {
 	return r.From.String() + "..." + r.To.String()
 }
 
+// ParseCostRange parses a cost range string into a CostRange.
 func ParseCostRange(s string) *CostRange {
 	segs := strings.Split(s, "...")
 	return &CostRange{
