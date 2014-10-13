@@ -1,0 +1,47 @@
+.loader {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: white;
+  height: 200px;
+  text-align: center;
+  opacity: 0.8;
+}
+.loader img {
+  margin-top: 90px;
+}
+
+.starts-hidden {
+  display: none;
+}
+
+#map {
+  width: 100%;
+  height: 300px;
+}
+
+ol#route {
+  margin: 0;
+}
+ol#route li {
+  margin-bottom: 10px;
+}
+
+img.icon {
+  margin-left: 10px;
+}
+#route li span small {
+  display: block;
+}
+
+ul#photos {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 20px;
+}
+ul#photos li img {
+  width: 100%;
+}

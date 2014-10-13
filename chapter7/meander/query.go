@@ -88,7 +88,7 @@ func (q *Query) Run() []interface{} {
 			for _, result := range response.Results {
 				for _, photo := range result.Photos {
 					photo.URL = "https://maps.googleapis.com/maps/api/place/photo?" +
-						"maxwidth=400&photoreference=" + photo.PhotoRef + "&key=" + APIKey
+						"maxwidth=1000&photoreference=" + photo.PhotoRef + "&key=" + APIKey
 				}
 			}
 			placesL.Lock()

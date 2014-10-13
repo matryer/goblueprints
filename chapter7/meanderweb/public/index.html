@@ -1,13 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Meander</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <title>Meander - Random adventure</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="app.css">
 </head>
 <body>
 
+  <div class="loader">
+    <img src="loading.gif" />
+  </div>
 
-  <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyBw8jI_Lq_UjCyHqKaxtoyYcNVGIeJG1fE"></script>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-8">
+        <div class="jumbotron">
+          <h1>Meander <small>Random adventure</small></h1>
+        </div>
+
+        <form role="form" id="meanderform">
+          <div class="form-group">
+            <label>I'm looking for </label>
+            <select id="journeys" class="form-control">
+              <option>Pick adventure type</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>In or near</label>
+            <input type="text" class="form-control" id="location" placeholder="Enter location or address">
+          </div>
+          <div class="form-group">
+            <label>Price</label>
+            <select id="price" class="form-control">
+              <option value="$...$$$$$">Anything</option>
+              <option value="$...$$$">Inexpensive</option>
+              <option value="$$$...$$$$$">Expensive</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Let's meander</button>
+        </form>
+
+        <div id="adventure" class="starts-hidden">
+          <button class="btn btn-link change-adventure">&lt; change adventure</button>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <a class="btn-link pull-right shuffle">Shuffle</a>
+              <h3 class="panel-title">Random adventure</h3>
+            </div>
+            <div class="panel-body">
+
+              <div class="row">
+                <div class="col-md-8">
+                  <div id="map"></div>
+                </div>
+                <div class="col-md-4">
+                  <ol id="route"></ol>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <ul id="photos"></ul>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2"></div>
+    </div>
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyBrfDssb6Tgiehz1U77Xk6RWrk1u8hYa1k"></script>
   <script type="text/javascript" src="/app.js"></script>
 </body>
 </html>
