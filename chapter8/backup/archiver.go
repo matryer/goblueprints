@@ -18,6 +18,8 @@ type Archiver interface {
 	Restore(src, dest string) error
 }
 
+var DefaultArchiver = Zip
+
 type zipper struct{}
 
 func (z *zipper) Archive(src, dest string) error {

@@ -103,3 +103,5 @@ chapter7.zip
 chapter7/meander/cmd/meander
 
 chapter8/backup/cmd/backup
+
+chapter8/backup/cmds/backup/backup

@@ -18,13 +18,13 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	var (
 		interval = flag.Int("interval", 10, "interval between checks (seconds)")
-		dest     = flag.String("dest", "archive", "path to archive location")
+		archive  = flag.String("archive", "archive", "path to archive location")
 		pathlist = flag.String("paths", "", "colon separated list of paths to backup")
 	)
 	flag.Parse()
 	m := &backup.Monitor{
-		Destination: *dest,
-		Archiver:    backup.Zip,
+		Destination: *archive,
+		Archiver:    backup.DefaultArchiver,
 		Paths:       make(map[string]string),
 	}
 	paths := strings.Split(*pathlist, ":")

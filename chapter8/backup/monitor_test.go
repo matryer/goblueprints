@@ -1,7 +1,6 @@
 package backup_test
 
 import (
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -27,7 +26,7 @@ func TestMonitor(t *testing.T) {
 
 	require.Equal(t, 2, len(a.Archives))
 	for _, call := range a.Archives {
-		require.True(t, strings.HasPrefix(call.Dest, filepath.Join(m.Destination, call.Src)))
+		require.True(t, strings.HasPrefix(call.Dest, m.Destination))
 		require.True(t, strings.HasSuffix(call.Dest, ".zip"))
 	}
 
