@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"path/filepath"
 	"sync"
 
 	"github.com/stretchr/powerwalk"
@@ -20,6 +21,9 @@ type Archiver interface {
 type zipper struct{}
 
 func (z *zipper) Archive(src, dest string) error {
+	if err := os.MkdirAll(filepath.Dir(dest), 0777); err != nil {
+		return err
+	}
 	out, err := os.Create(dest)
 	if err != nil {
 		return err
@@ -47,6 +51,7 @@ func (z *zipper) Archive(src, dest string) error {
 		return nil
 	}, 10)
 }
+
 func (z *zipper) Restore(src, dest string) error {
 	r, err := zip.OpenReader(src)
 	if err != nil {

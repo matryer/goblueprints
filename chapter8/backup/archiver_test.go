@@ -27,3 +27,24 @@ func TestZipArchive(t *testing.T) {
 	require.NoError(t, err)
 
 }
+
+type call struct {
+	Src  string
+	Dest string
+}
+
+type TestArchiver struct {
+	Archives []*call
+	Restores []*call
+}
+
+var _ backup.Archiver = (*TestArchiver)(nil)
+
+func (a *TestArchiver) Archive(src, dest string) error {
+	a.Archives = append(a.Archives, &call{Src: src, Dest: dest})
+	return nil
+}
+func (a *TestArchiver) Restore(src, dest string) error {
+	a.Restores = append(a.Restores, &call{Src: src, Dest: dest})
+	return nil
+}
