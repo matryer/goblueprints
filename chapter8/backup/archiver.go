@@ -7,8 +7,6 @@ import (
 	"path"
 	"path/filepath"
 	"sync"
-
-	"github.com/stretchr/powerwalk"
 )
 
 // Archiver represents type capable of archiving and
@@ -33,7 +31,7 @@ func (z *zipper) Archive(src, dest string) error {
 	defer out.Close()
 	w := zip.NewWriter(out)
 	defer w.Close()
-	return powerwalk.WalkLimit(src, func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil // skip
 		}
@@ -50,8 +48,9 @@ func (z *zipper) Archive(src, dest string) error {
 			return err
 		}
 		io.Copy(f, in)
+		w.Flush()
 		return nil
-	}, 10)
+	})
 }
 
 func (z *zipper) Restore(src, dest string) error {
