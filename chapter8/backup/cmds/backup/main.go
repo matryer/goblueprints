@@ -54,13 +54,12 @@ func main() {
 		return
 	}
 	defer db.Close()
-	col, err := db.C("backup")
+	col, err := db.C("paths")
 	if err != nil {
 		fatalErr = err
 		return
 	}
-	cmd := strings.ToLower(args[0])
-	switch cmd {
+	switch strings.ToLower(args[0]) {
 	case "list":
 		var path path
 		col.ForEach(func(i int, data []byte) bool {
@@ -102,9 +101,4 @@ func main() {
 			return false, false
 		})
 	}
-
-	if fatalErr != nil {
-		return
-	}
-
 }

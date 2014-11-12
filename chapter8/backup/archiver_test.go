@@ -19,11 +19,11 @@ func TestZipArchive(t *testing.T) {
 	setup(t)
 	defer teardown(t)
 
-	err := backup.Zip.Archive("test/hash1", "test/output/1.zip")
+	err := backup.ZIP.Archive("test/hash1", "test/output/1.zip")
 	require.NoError(t, err)
 
 	// unzip
-	err = backup.Zip.Restore("test/output/1.zip", "test/output/restored")
+	err = backup.ZIP.Restore("test/output/1.zip", "test/output/restored")
 	require.NoError(t, err)
 
 }
@@ -39,6 +39,10 @@ type TestArchiver struct {
 }
 
 var _ backup.Archiver = (*TestArchiver)(nil)
+
+func (a *TestArchiver) DestFmt() string {
+	return "%d.zip"
+}
 
 func (a *TestArchiver) Archive(src, dest string) error {
 	a.Archives = append(a.Archives, &call{Src: src, Dest: dest})

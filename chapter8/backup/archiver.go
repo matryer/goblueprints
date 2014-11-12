@@ -12,13 +12,22 @@ import (
 // Archiver represents type capable of archiving and
 // restoring files.
 type Archiver interface {
+	DestFmt() string
 	Archive(src, dest string) error
 	Restore(src, dest string) error
 }
 
-var DefaultArchiver = Zip
+// XDefaultArchiver represents an Archiver that is used when
+// no others have been specified.
+// Default is the ZIP archiver.
+
+var DefaultArchiver = ZIP
 
 type zipper struct{}
+
+func (z *zipper) DestFmt() string {
+	return "%d.zip"
+}
 
 func (z *zipper) Archive(src, dest string) error {
 	if err := os.MkdirAll(filepath.Dir(dest), 0777); err != nil {
@@ -48,7 +57,6 @@ func (z *zipper) Archive(src, dest string) error {
 			return err
 		}
 		io.Copy(f, in)
-		w.Flush()
 		return nil
 	})
 }
@@ -110,4 +118,4 @@ func (z *zipper) Restore(src, dest string) error {
 }
 
 // Zip is an Archiver that zips and unzips files.
-var Zip Archiver = (*zipper)(nil)
+var ZIP Archiver = (*zipper)(nil)

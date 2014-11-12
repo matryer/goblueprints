@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"runtime"
 	"syscall"
 	"time"
 
@@ -28,7 +27,6 @@ func main() {
 			log.Fatalln(fatalErr)
 		}
 	}()
-	runtime.GOMAXPROCS(runtime.NumCPU())
 	var (
 		interval = flag.Int("interval", 10, "interval between checks (seconds)")
 		archive  = flag.String("archive", "archive", "path to archive location")
@@ -37,7 +35,7 @@ func main() {
 	flag.Parse()
 	m := &backup.Monitor{
 		Destination: *archive,
-		Archiver:    backup.DefaultArchiver,
+		Archiver:    backup.ZIP,
 		Paths:       make(map[string]string),
 	}
 	db, err := filedb.Dial(*dbpath)
@@ -46,7 +44,7 @@ func main() {
 		return
 	}
 	defer db.Close()
-	col, err := db.C("backup")
+	col, err := db.C("paths")
 	if err != nil {
 		fatalErr = err
 		return
