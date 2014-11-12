@@ -8,13 +8,12 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/stretchr/objx"
-
 	"github.com/matryer/goblueprints/chapter1/trace"
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/facebook"
 	"github.com/stretchr/gomniauth/providers/github"
 	"github.com/stretchr/gomniauth/providers/google"
+	"github.com/stretchr/objx"
 )
 
 // templ represents a single template
