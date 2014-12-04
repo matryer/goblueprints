@@ -3,13 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"strings"
 
-	"github.com/stretchr/objx"
-
 	"github.com/stretchr/gomniauth"
-
-	"net/http"
+	"github.com/stretchr/objx"
 )
 
 type authHandler struct {
@@ -20,7 +18,7 @@ func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if _, err := r.Cookie("auth"); err == http.ErrNoCookie {
 		// not authenticated
-		w.Header()["Location"] = []string{"/login"}
+		w.Header().Set("Location", "/login")
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	} else if err != nil {
 		// some other error
@@ -85,11 +83,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			Value: authCookieValue,
 			Path:  "/"})
 
-		w.Header()["Location"] = []string{"/chat"}
+		w.Header().Set("Location", "/chat")
 		w.WriteHeader(http.StatusTemporaryRedirect)
 
 	default:
-		w.Write([]byte(fmt.Sprintf("Auth action %s not supported", action)))
 		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "Auth action %s not supported", action)
 	}
 }

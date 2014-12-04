@@ -34,7 +34,7 @@ func TestAuthAvatar(t *testing.T) {
 		}
 	}
 }
-func TestGravitarAvatar(t *testing.T) {
+func TestGravatarAvatar(t *testing.T) {
 
 	var gravatarAvitar GravatarAvatar
 	user := &chatUser{uniqueID: "abc"}

@@ -15,65 +15,71 @@ type poll struct {
 }
 
 func handlePolls(w http.ResponseWriter, r *http.Request) {
-
-	db := GetVar(r, "db").(*mgo.Database)
-	c := db.C("polls")
-
 	switch r.Method {
 	case "GET":
-
-		var q *mgo.Query
-		p := NewPath(r.URL.Path)
-		if p.HasID() {
-			// get specific poll
-			q = c.FindId(bson.ObjectIdHex(p.ID))
-		} else {
-			// get all polls
-			q = c.Find(nil)
-		}
-		var result []*poll
-		if err := q.All(&result); err != nil {
-			respondErr(w, r, http.StatusInternalServerError, err)
-			return
-		}
-		respond(w, r, http.StatusOK, &result)
+		handlePollsGet(w, r)
 		return
-
 	case "POST":
-
-		var p poll
-		if err := decodeBody(r, &p); err != nil {
-			respondErr(w, r, http.StatusBadRequest, "failed to read poll from request", err)
-			return
-		}
-		p.ID = bson.NewObjectId()
-		if err := c.Insert(p); err != nil {
-			respondErr(w, r, http.StatusInternalServerError, "failed to insert poll", err)
-			return
-		}
-		w.Header().Set("Location", "polls/"+p.ID.Hex())
-		respond(w, r, http.StatusCreated, nil)
+		handlePollsPost(w, r)
 		return
-
 	case "DELETE":
-
-		p := NewPath(r.URL.Path)
-		if !p.HasID() {
-			respondErr(w, r, http.StatusMethodNotAllowed, "Cannot delete all polls.")
-			return
-		}
-		if err := c.RemoveId(bson.ObjectIdHex(p.ID)); err != nil {
-			respondErr(w, r, http.StatusInternalServerError, "failed to delete poll", err)
-			return
-		}
-		respond(w, r, http.StatusOK, nil) // ok
-
+		handlePollsDelete(w, r)
+		return
 	case "OPTIONS":
 		w.Header().Add("Access-Control-Allow-Methods", "DELETE")
 		respond(w, r, http.StatusOK, nil)
+		return
 	}
-
 	// not found
 	respondHTTPErr(w, r, http.StatusNotFound)
+}
 
+func handlePollsGet(w http.ResponseWriter, r *http.Request) {
+	db := GetVar(r, "db").(*mgo.Database)
+	c := db.C("polls")
+	var q *mgo.Query
+	p := NewPath(r.URL.Path)
+	if p.HasID() {
+		// get specific poll
+		q = c.FindId(bson.ObjectIdHex(p.ID))
+	} else {
+		// get all polls
+		q = c.Find(nil)
+	}
+	var result []*poll
+	if err := q.All(&result); err != nil {
+		respondErr(w, r, http.StatusInternalServerError, err)
+		return
+	}
+	respond(w, r, http.StatusOK, &result)
+}
+func handlePollsPost(w http.ResponseWriter, r *http.Request) {
+	db := GetVar(r, "db").(*mgo.Database)
+	c := db.C("polls")
+	var p poll
+	if err := decodeBody(r, &p); err != nil {
+		respondErr(w, r, http.StatusBadRequest, "failed to read poll from request", err)
+		return
+	}
+	p.ID = bson.NewObjectId()
+	if err := c.Insert(p); err != nil {
+		respondErr(w, r, http.StatusInternalServerError, "failed to insert poll", err)
+		return
+	}
+	w.Header().Set("Location", "polls/"+p.ID.Hex())
+	respond(w, r, http.StatusCreated, nil)
+}
+func handlePollsDelete(w http.ResponseWriter, r *http.Request) {
+	db := GetVar(r, "db").(*mgo.Database)
+	c := db.C("polls")
+	p := NewPath(r.URL.Path)
+	if !p.HasID() {
+		respondErr(w, r, http.StatusMethodNotAllowed, "Cannot delete all polls.")
+		return
+	}
+	if err := c.RemoveId(bson.ObjectIdHex(p.ID)); err != nil {
+		respondErr(w, r, http.StatusInternalServerError, "failed to delete poll", err)
+		return
+	}
+	respond(w, r, http.StatusOK, nil) // ok
 }

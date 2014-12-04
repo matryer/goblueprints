@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 	"text/template"
 
 	"github.com/matryer/goblueprints/chapter1/trace"
@@ -18,15 +19,16 @@ import (
 
 // templ represents a single template
 type templateHandler struct {
+	once     sync.Once
 	filename string
 	templ    *template.Template
 }
 
 // ServeHTTP handles the HTTP request.
 func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if t.templ == nil {
+	t.once.Do(func() {
 		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
-	}
+	})
 
 	data := map[string]interface{}{
 		"Host": r.Host,
