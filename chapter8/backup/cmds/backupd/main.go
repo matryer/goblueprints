@@ -68,7 +68,6 @@ func main() {
 	check(m, col)
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
-	stop := false
 	for {
 		select {
 		case <-time.After(time.Duration(*interval) * time.Second):
@@ -77,13 +76,10 @@ func main() {
 			// stop
 			fmt.Println()
 			log.Printf("Stopping...")
-			stop = true
-			break
-		}
-		if stop {
-			break
+			goto stop
 		}
 	}
+stop:
 }
 
 func check(m *backup.Monitor, col *filedb.C) {
