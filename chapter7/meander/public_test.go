@@ -3,8 +3,8 @@ package meander_test
 import (
 	"testing"
 
+	"github.com/cheekybits/is"
 	"github.com/matryer/goblueprints/chapter7/meander"
-	"github.com/stretchr/testify/require"
 )
 
 type obj struct {
@@ -18,6 +18,7 @@ func (o *obj) Public() interface{} {
 }
 
 func TestPublic(t *testing.T) {
+	is := is.New(t)
 
 	o := &obj{
 		value1: "value1",
@@ -26,9 +27,9 @@ func TestPublic(t *testing.T) {
 	}
 
 	v, ok := meander.Public(o).(map[string]interface{})
-	require.True(t, ok, "Result should be msi")
-	require.Equal(t, v["one"], "value1")
-	require.Nil(t, v["two"], "value2")
-	require.Equal(t, v["three"], "value3")
+	is.Equal(true, ok) // "Result should be msi"
+	is.Equal(v["one"], "value1")
+	is.Nil(v["two"]) // value2
+	is.Equal(v["three"], "value3")
 
 }
