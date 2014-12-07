@@ -6,6 +6,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"sync"
 	"time"
 )
@@ -47,14 +48,17 @@ type Query struct {
 
 func (q *Query) find(types string) (*googleResponse, error) {
 	u := "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
-	u = fmt.Sprintf("%s?location=%g,%g&radius=%d", u, q.Lat, q.Lng, q.Radius)
-	u = fmt.Sprintf("%s&types=%s", u, types)
-	u = fmt.Sprintf("%s&key=%s", u, APIKey)
+	vals := make(url.Values)
+	vals.Set("location", fmt.Sprintf("%g,%g", q.Lat, q.Lng))
+	vals.Set("radius", fmt.Sprintf("%d", q.Radius))
+	vals.Set("types", types)
+	vals.Set("key", APIKey)
 	if len(q.CostRangeStr) > 0 {
 		r := ParseCostRange(q.CostRangeStr)
-		u = fmt.Sprintf("%s&minprice=%d&maxprice=%d", u, int(r.From)-1, int(r.To)-1)
+		vals.Set("minprice", fmt.Sprintf("%d", int(r.From)-1))
+		vals.Set("maxprice", fmt.Sprintf("%d", int(r.To)-1))
 	}
-	res, err := http.Get(u)
+	res, err := http.Get(u + "?" + vals.Encode())
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +74,7 @@ func (q *Query) find(types string) (*googleResponse, error) {
 func (q *Query) Run() []interface{} {
 	rand.Seed(time.Now().UnixNano())
 	var w sync.WaitGroup
-	var placesL sync.Mutex
+	var l sync.Mutex
 	places := make([]interface{}, len(q.Journey))
 	for i, r := range q.Journey {
 		w.Add(1)
@@ -91,10 +95,10 @@ func (q *Query) Run() []interface{} {
 						"maxwidth=1000&photoreference=" + photo.PhotoRef + "&key=" + APIKey
 				}
 			}
-			placesL.Lock()
-			defer placesL.Unlock()
 			randI := rand.Intn(len(response.Results))
+			l.Lock()
 			places[i] = response.Results[randI]
+			l.Unlock()
 		}(r, i)
 	}
 	w.Wait() // wait for everything to finish
