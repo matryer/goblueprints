@@ -25,8 +25,8 @@ type tracer struct {
 
 // Trace writes the arguments to this Tracers io.Writer.
 func (t *tracer) Trace(a ...interface{}) {
-	t.out.Write([]byte(fmt.Sprint(a...)))
-	t.out.Write([]byte("\n"))
+	fmt.Fprint(t.out, a...)
+	fmt.Fprintln(t.out)
 }
 
 // nilTracer
