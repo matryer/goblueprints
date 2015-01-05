@@ -41,9 +41,13 @@ Each chapter has its own section which it is recommended that you read _before_ 
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter6)
 
-## Appendixes
+### Chapter 7
 
-Some of the appendixes have code too, which you are free to browse.
+  * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter7)
+
+### Chapter 8
+
+  * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter8)
 
 ### Appendix A
 
