@@ -1,6 +1,8 @@
-# Go Blueprints by Mat Ryer
+# Go Blueprints
 
-This is the official source code repository for the book.  You are welcome to browse this repository and use the [issues tab](https://github.com/matryer/goblueprints/issues) to report any problems or ask any questions.
+![Go Blueprints by Mat Ryer book cover](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover.jpg)
+
+This is the official source code repository for the book. You are welcome to browse this repository and use the [issues tab](https://github.com/matryer/goblueprints/issues) to report any problems or ask any questions.
 
   * **Feel free to copy and paste from the repository where appropriate**, althrough typing the code out will surely do more for the learning experience
 
