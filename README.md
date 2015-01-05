@@ -6,6 +6,11 @@ This is the official source code repository for the book. You are welcome to bro
 
   * **Feel free to copy and paste from the repository where appropriate**, althrough typing the code out will surely do more for the learning experience
 
+## Get the book
+
+  * From [Packtpub.com](https://www.packtpub.com/application-development/go-programming-blueprints)
+  * From [Amazon.com](http://www.amazon.com/Go-Programming-Blueprints-Mat-Ryer/dp/1783988029) 
+
 ## Projects
 
 Throughout the book many projects, programs and packages are developed, including:
