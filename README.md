@@ -40,7 +40,7 @@ Each chapter has its own section which it is recommended that you read _before_ 
 
 Corrections:
 
-  * Page 83: The HTML `<label>` is not properly attached to the associated `<input>` - https://github.com/matryer/goblueprints/commit/afb4285f47a7482a58f6fa5061982f874a3fa11e - Thanks @crbrox 
+  * Page 83: The HTML `<label>` is not properly attached to the associated `<input>` - [View Diff](https://github.com/matryer/goblueprints/commit/afb4285f47a7482a58f6fa5061982f874a3fa11e) - Thanks [@crbrox](https://github.com/crbrox) 
 
 ### Chapter 4
 
