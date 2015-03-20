@@ -38,6 +38,8 @@ Each chapter has its own section which it is recommended that you read _before_ 
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter3)
 
+  * The HTML `<label>` is not properly attached to the associated `<input>` - https://github.com/matryer/goblueprints/commit/afb4285f47a7482a58f6fa5061982f874a3fa11e - Thanks @crbrox 
+
 ### Chapter 4
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter4)
