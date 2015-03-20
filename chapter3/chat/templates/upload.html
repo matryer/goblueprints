@@ -11,8 +11,8 @@
       <form role="form" action="/uploader" enctype="multipart/form-data" method="post">
         <input type="hidden" name="userid" value="{{.UserData.userid}}" />
         <div class="form-group">
-          <label for="message">Select file</label>
-          <input type="file" name="avatarFile" />
+          <label for="avatarFile">Select file</label>
+          <input type="file" name="avatarFile" id="avatarFile" />
         </div>
         <input type="submit" value="Upload" class="btn btn-default" />
       </form>
