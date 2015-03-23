@@ -34,12 +34,17 @@ Each chapter has its own section which it is recommended that you read _before_ 
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter2)
 
+Notes:
+
+  * Page 53: `w.Header.SetSet` should just be `w.Header.Set` - your compiler will help you spot this one. - Thanks [@lozandier](https://github.com/lozandier)
+
 ### Chapter 3
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter3)
 
 Corrections:
 
+  * Page 78: Autocompleted typo: `gravatarAvitar` should be `gravatarAvatar` - you can name your variables anything you like, but it's nice for them to be spelled correctly. - Thanks [@lozandier](https://github.com/lozandier)
   * Page 83: The HTML `<label>` is not properly attached to the associated `<input>` - [View Diff](https://github.com/matryer/goblueprints/commit/afb4285f47a7482a58f6fa5061982f874a3fa11e) - Thanks [@crbrox](https://github.com/crbrox) 
 
 ### Chapter 4
