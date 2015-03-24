@@ -92,7 +92,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		chatUser := &chatUser{User: user}
 
 		m := md5.New()
-		io.WriteString(m, strings.ToLower(user.Name()))
+		io.WriteString(m, strings.ToLower(user.Email()))
 		chatUser.uniqueID = fmt.Sprintf("%x", m.Sum(nil))
 
 		avatarURL, err := avatars.GetAvatarURL(chatUser)
