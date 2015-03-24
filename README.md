@@ -42,7 +42,11 @@ Notes:
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter3)
 
-Notes:
+Issues:
+
+  * Page 81: For Gravatar to work, you need to hash the email address, not the user's name: `io.WriteString(m, strings.ToLower(user.Email()))` - Thanks [@lozandier](https://github.com/lozandier)
+
+Other minor things:
 
   * Page 78: Autocompleted typo: `gravatarAvitar` should be `gravatarAvatar` - you can name your variables anything you like, but it's nice for them to be spelled correctly. - Thanks [@lozandier](https://github.com/lozandier)
   * Page 83: The HTML `<label>` is not properly attached to the associated `<input>` - [View Diff](https://github.com/matryer/goblueprints/commit/afb4285f47a7482a58f6fa5061982f874a3fa11e) - Thanks [@crbrox](https://github.com/crbrox) 
