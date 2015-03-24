@@ -53,7 +53,7 @@ func TestFileSystemAvatar(t *testing.T) {
 
 	// make a test avatar file
 	filename := path.Join("avatars", "abc.jpg")
-	if err := os.Mkdir("avatars", 0777); err != nil {
+	if err := os.MkdirAll("avatars", 0777); err != nil {
 		t.Errorf("couldn't make avatar dir: %s", err)
 	}
 	if err := ioutil.WriteFile(filename, []byte{}, 0777); err != nil {
