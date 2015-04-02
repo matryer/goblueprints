@@ -5,11 +5,11 @@
 This is the official source code repository for the book. You are welcome to browse this repository and use the [issues tab](https://github.com/matryer/goblueprints/issues) to report any problems or ask any questions.
 
   * **Feel free to copy and paste from the repository where appropriate**, althrough typing the code out will surely do more for the learning experience
+  * If you are enjoying the book, please tell others by [reviewing the book on Amazon](http://bit.ly/goblueprints)
 
 ## Get the book
 
-  * From [Packtpub.com](https://www.packtpub.com/application-development/go-programming-blueprints)
-  * From [Amazon.com](http://www.amazon.com/Go-Programming-Blueprints-Mat-Ryer/dp/1783988029) 
+  * From [Amazon.com](http://bit.ly/goblueprints) 
 
 ## Projects
 
