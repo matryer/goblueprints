@@ -58,6 +58,7 @@ Other minor things:
 Issues:
 
   * BigHuge is mistyped in a few places as BigHugh. I don't know who Big Hugh is, but I'm sure he's very nice. Either way, he's a little unwelcome in Chapter 4, so you should consistently type big **HUGE** - Thanks [@OAGr](https://github.com/OAGr)
+  * Page 112: Sometimes `data.Noun` and `data.Verb` are `nil`, which causes a panic. Make your code a little more bulletproof by first checking if they're `== nil` before trying to access the `Syn` field. See [Issue #11](https://github.com/matryer/goblueprints/issues/11) for a solution. Thanks [@OAGr](https://github.com/OAGr)
 
 ### Chapter 5
 
