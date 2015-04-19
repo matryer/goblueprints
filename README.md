@@ -55,6 +55,10 @@ Other minor things:
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter4)
 
+Issues:
+
+  * BigHuge is mistyped in a few places as BigHugh. I don't konw who Big Hugh is, but I'm sure he's very nice. Either way, you should consistently type big **HUGE** - Thanks [@OAGr](https://github.com/OAGr)
+
 ### Chapter 5
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter5)
