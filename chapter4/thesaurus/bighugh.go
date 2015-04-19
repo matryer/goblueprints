@@ -30,7 +30,11 @@ func (b *BigHugh) Synonyms(term string) ([]string, error) {
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
 		return syns, err
 	}
-	syns = append(syns, data.Noun.Syn...)
-	syns = append(syns, data.Verb.Syn...)
+	if data.Noun != nil {
+		syns = append(syns, data.Noun.Syn...)
+	}
+	if data.Verb != nil {
+		syns = append(syns, data.Verb.Syn...)
+	}
 	return syns, nil
 }
