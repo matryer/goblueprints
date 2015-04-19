@@ -57,7 +57,7 @@ Other minor things:
 
 Issues:
 
-  * BigHuge is mistyped in a few places as BigHugh. I don't konw who Big Hugh is, but I'm sure he's very nice. Either way, you should consistently type big **HUGE** - Thanks [@OAGr](https://github.com/OAGr)
+  * BigHuge is mistyped in a few places as BigHugh. I don't know who Big Hugh is, but I'm sure he's very nice. Either way, he's a little unwelcome in Chapter 4, so you should consistently type big **HUGE** - Thanks [@OAGr](https://github.com/OAGr)
 
 ### Chapter 5
 
