@@ -18,7 +18,7 @@ Throughout the book many projects, programs and packages are developed, includin
   * [Chat application](https://github.com/matryer/goblueprints/tree/master/chapter3/chat) web application that lets people have conversations in their browsers.
   * [Tracer package](https://github.com/matryer/goblueprints/tree/master/chapter1/trace) package that provides tracing capabilities for Go programs. Built for illustration purposes, in production environments consider using [log.Logger](http://golang.org/pkg/log/#Logger) from the standard library instead.
   * [Domain finder](https://github.com/matryer/goblueprints/tree/master/chapter4/domainfinder) program that helps you find the perfect domain name for your projects, including whether they're available or not. Depends on a series of [subprograms](https://github.com/matryer/goblueprints/tree/master/chapter4) that do its bidding.
-  * [Thesaurus](https://github.com/matryer/goblueprints/tree/master/chapter4/thesaurus) package that provides an interface and an implementation for [Big Hugh Thesaurus](http://words.bighugelabs.com/) that allows you to lookup synonyms of words.
+  * [Thesaurus](https://github.com/matryer/goblueprints/tree/master/chapter4/thesaurus) package that provides an interface and an implementation for [Big Huge Thesaurus](http://words.bighugelabs.com/) that allows you to lookup synonyms of words.
   * [Meander](https://github.com/matryer/goblueprints/tree/master/chapter7/meander) package that provides random event recommendations with associated [web application](https://github.com/matryer/goblueprints/tree/master/chapter7/meanderweb)
   * [Backup](https://github.com/matryer/goblueprints/tree/master/chapter8/backup) program for periodically backing up your source code.
 
