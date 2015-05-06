@@ -34,10 +34,6 @@ Each chapter has its own section which it is recommended that you read _before_ 
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter2)
 
-Notes:
-
-  * Page 53: `w.Header.SetSet` should just be `w.Header.Set` - your compiler will help you spot this one. - Thanks [@lozandier](https://github.com/lozandier)
-
 ### Chapter 3
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter3)
