@@ -60,6 +60,10 @@ Issues:
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter5)
 
+Issues:
+
+  * There's a data-race with the way I call `updater.Reset` from within the function. [Read more about it here](https://github.com/matryer/goblueprints/issues/12).
+
 ### Chapter 6
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter6)
