@@ -35,6 +35,10 @@ Each chapter has its own section which it is recommended that you read _before_ 
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter2)
 
+Issues:
+
+  * Page 53: `w.Header.Set` should be `w.Header().Set` since `Header` is a function on `http.ResponseWriter`.
+
 ### Chapter 3
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter3)
