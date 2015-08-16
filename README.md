@@ -35,7 +35,7 @@ Each chapter has its own section which it is recommended that you read _before_ 
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter2)
 
-Issues:
+Notes:
 
   * Page 53: `w.Header.Set` should be `w.Header().Set` since `Header` is a function on `http.ResponseWriter`.
 
@@ -43,7 +43,7 @@ Issues:
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter3)
 
-Issues:
+Notes:
 
   * Page 81: For Gravatar to work, you need to hash the email address, not the user's name: `io.WriteString(m, strings.ToLower(user.Email()))` - Thanks [@lozandier](https://github.com/lozandier)
 
@@ -56,7 +56,7 @@ Other minor things:
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter4)
 
-Issues:
+Notes:
 
   * BigHuge is mistyped in a few places as BigHugh. I don't know who Big Hugh is, but I'm sure he's very nice. Either way, he's a little unwelcome in Chapter 4, so you should consistently type big **HUGE** - Thanks [@OAGr](https://github.com/OAGr)
   * Page 112: Sometimes `data.Noun` and `data.Verb` are `nil`, which causes a panic. Make your code a little more bulletproof by first checking if they're `== nil` before trying to access the `Syn` field. See [Issue #11](https://github.com/matryer/goblueprints/issues/11) for a solution. Thanks [@OAGr](https://github.com/OAGr)
@@ -65,7 +65,7 @@ Issues:
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter5)
 
-Issues:
+Notes:
 
   * There's a data-race with the way I call `updater.Reset` from within the function. [Read more about it here](https://github.com/matryer/goblueprints/issues/12).
 
