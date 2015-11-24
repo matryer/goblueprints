@@ -71,6 +71,7 @@ Notes:
 
 ### Chapter 6
 
+  * Struct tags are written like this: `json:"title"`
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter6)
 
 ### Chapter 7
