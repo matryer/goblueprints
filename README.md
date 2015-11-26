@@ -4,7 +4,7 @@
 
 This is the official source code repository for the book. You are welcome to browse this repository and use the [issues tab](https://github.com/matryer/goblueprints/issues) to report any problems or ask any questions.
 
-  * **Feel free to copy and paste from the repository where appropriate**, althrough typing the code out will surely do more for the learning experience
+  * **Feel free to copy and paste from the repository where appropriate**, although typing the code out will surely do more for the learning experience
   * If you are enjoying the book, please tell others by [reviewing the book on Amazon](http://bit.ly/goblueprints)
 
 ## Get the book
