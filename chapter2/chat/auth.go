@@ -52,7 +52,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			log.Fatalln("Error when trying to GetBeginAuthURL for", provider, "-", err)
 		}
 
-		w.Header()["Location"] = []string{loginUrl}
+		w.Header().Set("Location", loginUrl)
 		w.WriteHeader(http.StatusTemporaryRedirect)
 
 	case "callback":

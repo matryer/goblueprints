@@ -35,7 +35,7 @@ func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if cookie, err := r.Cookie("auth"); err == http.ErrNoCookie || cookie.Value == "" {
 		// not authenticated
-		w.Header()["Location"] = []string{"/login"}
+		w.Header().Set("Location", "/login")
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	} else if err != nil {
 		// some other error
@@ -69,7 +69,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			log.Fatalln("Error when trying to GetBeginAuthURL for", provider, "-", err)
 		}
 
-		w.Header()["Location"] = []string{loginUrl}
+		w.Header().Set("Location", loginUrl)
 		w.WriteHeader(http.StatusTemporaryRedirect)
 
 	case "callback":
@@ -112,7 +112,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			Value: authCookieValue,
 			Path:  "/"})
 
-		w.Header()["Location"] = []string{"/chat"}
+		w.Header().Set("Location", "/chat")
 		w.WriteHeader(http.StatusTemporaryRedirect)
 
 	default:
