@@ -58,16 +58,8 @@ func (r *room) run() {
 			r.tracer.Trace("Message received: ", string(msg.Message))
 			// forward message to all clients
 			for client := range r.clients {
-				select {
-				case client.send <- msg:
-					// send the message
-					r.tracer.Trace(" -- sent to client")
-				default:
-					// failed to send
-					delete(r.clients, client)
-					close(client.send)
-					r.tracer.Trace(" -- failed to send, cleaned up client")
-				}
+				client.send <- msg
+				r.tracer.Trace(" -- sent to client")
 			}
 		}
 	}
