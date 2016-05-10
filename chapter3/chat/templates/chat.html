@@ -56,7 +56,7 @@
             //alert("Connection has been closed.");
           }
           socket.onmessage = function(e) {
-            var msg = eval("("+e.data+")");
+            var msg = JSON.parse("("+e.data+")");
             messages.append(
               $("<li>").append(
                 $("<img>").attr("title", msg.Name).css({
