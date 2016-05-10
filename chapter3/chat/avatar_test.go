@@ -21,15 +21,15 @@ func TestAuthAvatar(t *testing.T) {
 		t.Error("AuthAvatar.GetAvatarURL should return ErrNoAvatarURL when no value present")
 	}
 
-	testUrl := "http://url-to-gravatar/"
+	testURL := "http://url-to-gravatar/"
 	testUser = &gomniauthtest.TestUser{}
 	testChatUser.User = testUser
-	testUser.On("AvatarURL").Return(testUrl, nil)
+	testUser.On("AvatarURL").Return(testURL, nil)
 	url, err = authAvatar.GetAvatarURL(testChatUser)
 	if err != nil {
 		t.Error("AuthAvatar.GetAvatarURL should return no error when value present")
 	} else {
-		if url != testUrl {
+		if url != testURL {
 			t.Error("AuthAvatar.GetAvatarURL should return correct URL")
 		}
 	}

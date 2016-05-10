@@ -14,9 +14,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/bitly/go-nsq"
 	"github.com/joeshaw/envdecode"
 	"github.com/matryer/go-oauth/oauth"
+	"github.com/nsqio/go-nsq"
 	"gopkg.in/mgo.v2"
 )
 
@@ -155,11 +155,11 @@ func main() {
 			reader = resp.Body
 			decoder := json.NewDecoder(reader)
 			for {
-				var tweet tweet
-				if err := decoder.Decode(&tweet); err == nil {
+				var tw tweet
+				if err := decoder.Decode(&tw); err == nil {
 					for _, option := range options {
 						if strings.Contains(
-							strings.ToLower(tweet.Text),
+							strings.ToLower(tw.Text),
 							strings.ToLower(option),
 						) {
 							log.Println("vote:", option)

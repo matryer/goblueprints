@@ -117,5 +117,5 @@ func (z *zipper) Restore(src, dest string) error {
 	return nil
 }
 
-// Zip is an Archiver that zips and unzips files.
+// ZIP is an Archiver that zips and unzips files.
 var ZIP Archiver = (*zipper)(nil)
