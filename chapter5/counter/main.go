@@ -73,38 +73,49 @@ func main() {
 	}
 
 	log.Println("Waiting for votes on nsq...")
-	var updater *time.Timer
-	updater = time.AfterFunc(updateDuration, func() {
-		countsLock.Lock()
-		defer countsLock.Unlock()
-		if len(counts) == 0 {
-			log.Println("No new votes, skipping database update")
-		} else {
-			log.Println("Updating database...")
-			log.Println(counts)
-			ok := true
-			for option, count := range counts {
-				sel := bson.M{"options": bson.M{"$in": []string{option}}}
-				up := bson.M{"$inc": bson.M{"results." + option: count}}
-				if _, err := pollData.UpdateAll(sel, up); err != nil {
-					log.Println("failed to update:", err)
-					ok = false
+	var updaterStopCh = make(chan struct{})
+	go func() {
+		var ticker = time.NewTicker(updateDuration)
+		for {
+			select {
+			case <-ticker.C:
+			case <-updaterStopCh:
+				log.Println("Stop received in updater")
+				ticker.Stop()
+				return
+			}
+			func() {
+				countsLock.Lock()
+				defer countsLock.Unlock()
+				if len(counts) == 0 {
+					log.Println("No new votes, skipping database update")
+				} else {
+					log.Println("Updating database...")
+					log.Println(counts)
+					ok := true
+					for option, count := range counts {
+						sel := bson.M{"options": bson.M{"$in": []string{option}}}
+						up := bson.M{"$inc": bson.M{"results." + option: count}}
+						if _, err := pollData.UpdateAll(sel, up); err != nil {
+							log.Println("failed to update:", err)
+							ok = false
+						}
+					}
+					if ok {
+						log.Println("Finished updating database...")
+						counts = nil // reset counts
+					}
 				}
-			}
-			if ok {
-				log.Println("Finished updating database...")
-				counts = nil // reset counts
-			}
+			}()
 		}
-		updater.Reset(updateDuration)
-	})
+	}()
 
 	termChan := make(chan os.Signal, 1)
 	signal.Notify(termChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	for {
 		select {
 		case <-termChan:
-			updater.Stop()
+			close(updaterStopCh)
 			q.Stop()
 		case <-q.StopChan:
 			// finished
