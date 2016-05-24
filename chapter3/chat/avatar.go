@@ -45,7 +45,8 @@ func (FileSystemAvatar) GetAvatarURL(u ChatUser) (string, error) {
 		if file.IsDir() {
 			continue
 		}
-		if fname := file.Name(); u.UniqueID() == strings.TrimSuffix(fname, filepath.Ext(fname)) {
+		fname := file.Name()
+		if u.UniqueID() == strings.TrimSuffix(fname, filepath.Ext(fname)) {
 			return "/avatars/" + fname, nil
 		}
 	}
