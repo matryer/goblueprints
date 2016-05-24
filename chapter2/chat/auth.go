@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
@@ -15,21 +14,22 @@ type authHandler struct {
 }
 
 func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	if _, err := r.Cookie("auth"); err == http.ErrNoCookie {
+	err := r.Cookie("auth")
+	if err == http.ErrNoCookie {
 		// not authenticated
 		w.Header().Set("Location", "/login")
 		w.WriteHeader(http.StatusTemporaryRedirect)
-	} else if err != nil {
+		return
+	}
+	if err != nil {
 		// some other error
 		panic(err.Error())
-	} else {
-		// success - call the next handler
-		h.next.ServeHTTP(w, r)
 	}
-
+	// success - call the next handler
+	h.next.ServeHTTP(w, r)
 }
 
+// MustAuth adapts handler to ensure authentication has occurred.
 func MustAuth(handler http.Handler) http.Handler {
 	return &authHandler{next: handler}
 }
@@ -44,12 +44,14 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 		provider, err := gomniauth.Provider(provider)
 		if err != nil {
-			log.Fatalln("Error when trying to get provider", provider, "-", err)
+			http.Error(w, fmt.Sprintf("Error when trying to get provider %s: %s", provider, err), http.StatusBadRequest)
+			return
 		}
 
 		loginURL, err := provider.GetBeginAuthURL(nil, nil)
 		if err != nil {
-			log.Fatalln("Error when trying to GetBeginAuthURL for", provider, "-", err)
+			http.Error(w, fmt.Sprintf("Error when trying to GetBeginAuthURL for %s: %s", provider, err), http.StatusInternalServerError)
+			return
 		}
 
 		w.Header().Set("Location", loginURL)
@@ -59,19 +61,22 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 		provider, err := gomniauth.Provider(provider)
 		if err != nil {
-			log.Fatalln("Error when trying to get provider", provider, "-", err)
+			http.Error(w, fmt.Sprintf("Error when trying to get provider %s: %s", provider, err), http.StatusBadRequest)
+			return
 		}
 
 		// get the credentials
 		creds, err := provider.CompleteAuth(objx.MustFromURLQuery(r.URL.RawQuery))
 		if err != nil {
-			log.Fatalln("Error when trying to complete auth for", provider, "-", err)
+			http.Error(w, fmt.Sprintf("Error when trying to complete auth for %s: %s", provider, err), http.StatusInternalServerError)
+			return
 		}
 
 		// get the user
 		user, err := provider.GetUser(creds)
 		if err != nil {
-			log.Fatalln("Error when trying to get user from", provider, "-", err)
+			http.Error(w, fmt.Sprintf("Error when trying to get user from %s: %s", provider, err), http.StatusInternalServerError)
+			return
 		}
 
 		// save some data
