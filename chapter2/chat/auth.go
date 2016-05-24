@@ -14,7 +14,7 @@ type authHandler struct {
 }
 
 func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	err := r.Cookie("auth")
+	_, err := r.Cookie("auth")
 	if err == http.ErrNoCookie {
 		// not authenticated
 		w.Header().Set("Location", "/login")
