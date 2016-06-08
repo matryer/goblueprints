@@ -28,10 +28,9 @@ func TestAuthAvatar(t *testing.T) {
 	url, err = authAvatar.GetAvatarURL(testChatUser)
 	if err != nil {
 		t.Error("AuthAvatar.GetAvatarURL should return no error when value present")
-	} else {
-		if url != testURL {
-			t.Error("AuthAvatar.GetAvatarURL should return correct URL")
-		}
+	}
+	if url != testURL {
+		t.Error("AuthAvatar.GetAvatarURL should return correct URL")
 	}
 }
 func TestGravatarAvatar(t *testing.T) {

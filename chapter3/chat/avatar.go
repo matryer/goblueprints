@@ -59,10 +59,10 @@ var UseAuthAvatar AuthAvatar
 
 func (AuthAvatar) GetAvatarURL(u ChatUser) (string, error) {
 	url := u.AvatarURL()
-	if len(url) > 0 {
-		return u.AvatarURL(), nil
+	if len(url) == 0 {
+		return "", ErrNoAvatarURL
 	}
-	return "", ErrNoAvatarURL
+	return u.AvatarURL(), nil
 }
 
 type GravatarAvatar struct{}

@@ -37,7 +37,6 @@ func (c *client) read() {
 		}
 		c.room.forward <- msg
 	}
-
 }
 
 func (c *client) write() {

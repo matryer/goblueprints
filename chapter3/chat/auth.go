@@ -100,7 +100,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			log.Fatalln("Error when trying to GetAvatarURL", "-", err)
 		}
 
-		// save some data
 		authCookieValue := objx.New(map[string]interface{}{
 			"userid":     chatUser.uniqueID,
 			"name":       user.Name(),
