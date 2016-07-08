@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"io"
 	"log"
@@ -148,6 +149,11 @@ func main() {
 				continue
 			}
 			if resp.StatusCode != http.StatusOK {
+				// this is a nice way to see what the error actually is:
+				s := bufio.NewScanner(resp.Body)
+				s.Scan()
+				log.Println(s.Text())
+				log.Println(hashtags)
 				log.Println("StatusCode =", resp.StatusCode)
 				continue
 			}
@@ -155,11 +161,11 @@ func main() {
 			reader = resp.Body
 			decoder := json.NewDecoder(reader)
 			for {
-				var tw tweet
-				if err := decoder.Decode(&tw); err == nil {
+				var t tweet
+				if err := decoder.Decode(&t); err == nil {
 					for _, option := range options {
 						if strings.Contains(
-							strings.ToLower(tw.Text),
+							strings.ToLower(t.Text),
 							strings.ToLower(option),
 						) {
 							log.Println("vote:", option)
