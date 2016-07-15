@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"io"
 	"log"
@@ -148,6 +149,11 @@ func main() {
 				continue
 			}
 			if resp.StatusCode != http.StatusOK {
+				// this is a nice way to see what the error actually is:
+				s := bufio.NewScanner(resp.Body)
+				s.Scan()
+				log.Println(s.Text())
+				log.Println(hashtags)
 				log.Println("StatusCode =", resp.StatusCode)
 				continue
 			}
