@@ -12,18 +12,19 @@ type poll struct {
 	Title   string         `json:"title" bson:"title"`
 	Options []string       `json:"options"`
 	Results map[string]int `json:"results,omitempty"`
+	APIKey  string         `json:"apikey"`
 }
 
-func handlePolls(w http.ResponseWriter, r *http.Request) {
+func (s *Server) handlePolls(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		handlePollsGet(w, r)
+		s.handlePollsGet(w, r)
 		return
 	case "POST":
-		handlePollsPost(w, r)
+		s.handlePollsPost(w, r)
 		return
 	case "DELETE":
-		handlePollsDelete(w, r)
+		s.handlePollsDelete(w, r)
 		return
 	case "OPTIONS":
 		w.Header().Set("Access-Control-Allow-Methods", "DELETE")
@@ -34,9 +35,10 @@ func handlePolls(w http.ResponseWriter, r *http.Request) {
 	respondHTTPErr(w, r, http.StatusNotFound)
 }
 
-func handlePollsGet(w http.ResponseWriter, r *http.Request) {
-	db := GetVar(r, "db").(*mgo.Database)
-	c := db.C("polls")
+func (s *Server) handlePollsGet(w http.ResponseWriter, r *http.Request) {
+	session := s.db.Copy()
+	defer session.Close()
+	c := session.DB("ballots").C("polls")
 	var q *mgo.Query
 	p := NewPath(r.URL.Path)
 	if p.HasID() {
@@ -53,13 +55,19 @@ func handlePollsGet(w http.ResponseWriter, r *http.Request) {
 	}
 	respond(w, r, http.StatusOK, &result)
 }
-func handlePollsPost(w http.ResponseWriter, r *http.Request) {
-	db := GetVar(r, "db").(*mgo.Database)
-	c := db.C("polls")
+
+func (s *Server) handlePollsPost(w http.ResponseWriter, r *http.Request) {
+	session := s.db.Copy()
+	defer session.Close()
+	c := session.DB("ballots").C("polls")
 	var p poll
 	if err := decodeBody(r, &p); err != nil {
 		respondErr(w, r, http.StatusBadRequest, "failed to read poll from request", err)
 		return
+	}
+	apikey, ok := APIKey(r.Context())
+	if ok {
+		p.APIKey = apikey
 	}
 	p.ID = bson.NewObjectId()
 	if err := c.Insert(p); err != nil {
@@ -69,9 +77,11 @@ func handlePollsPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Location", "polls/"+p.ID.Hex())
 	respond(w, r, http.StatusCreated, nil)
 }
-func handlePollsDelete(w http.ResponseWriter, r *http.Request) {
-	db := GetVar(r, "db").(*mgo.Database)
-	c := db.C("polls")
+
+func (s *Server) handlePollsDelete(w http.ResponseWriter, r *http.Request) {
+	session := s.db.Copy()
+	defer session.Close()
+	c := session.DB("ballots").C("polls")
 	p := NewPath(r.URL.Path)
 	if !p.HasID() {
 		respondErr(w, r, http.StatusMethodNotAllowed, "Cannot delete all polls.")
