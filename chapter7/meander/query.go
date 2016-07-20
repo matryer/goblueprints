@@ -74,7 +74,7 @@ func (q *Query) find(types string) (*googleResponse, error) {
 func (q *Query) Run() []interface{} {
 	rand.Seed(time.Now().UnixNano())
 	var w sync.WaitGroup
-	var l sync.Mutex
+	var l sync.Mutex // protects places
 	places := make([]interface{}, len(q.Journey))
 	for i, r := range q.Journey {
 		w.Add(1)
