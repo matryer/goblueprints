@@ -18,10 +18,10 @@ var APIKey string
 // Place represents a single place.
 type Place struct {
 	*googleGeometry `json:"geometry"`
-	Name            string         `json:"name"`
-	Icon            string         `json:"icon"`
-	Photos          []*googlePhoto `json:"photos"`
-	Vicinity        string         `json:"vicinity"`
+	Name            string        `json:"name"`
+	Icon            string        `json:"icon"`
+	Photos          []googlePhoto `json:"photos"`
+	Vicinity        string        `json:"vicinity"`
 }
 
 // Public gets a public view of a Place.
@@ -106,10 +106,10 @@ func (q *Query) Run() []interface{} {
 }
 
 type googleResponse struct {
-	Results []*Place `json:"results"`
+	Results []Place `json:"results"`
 }
 type googleGeometry struct {
-	*googleLocation `json:"location"`
+	googleLocation `json:"location"`
 }
 type googleLocation struct {
 	Lat float64 `json:"lat"`
