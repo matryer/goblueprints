@@ -65,6 +65,7 @@
               });
             }
 
+            console.info('set center')
             map.setCenter(location);
             map.setZoom(1);
 
@@ -82,6 +83,7 @@
             var bounds = new google.maps.LatLngBounds();
 
             for (var r in results) {
+              if (!results.hasOwnProperty(r)) continue;
 
               var item = results[r];
               if (!item) continue;
@@ -99,6 +101,7 @@
 
               if (item.photos) {
                 if (item.photos.length > 0) {
+                  console.info(item.photos)
                   $("#photos").append(
                     $("<li/>").append(
                       $("<img>").attr("src", item.photos[0].url)
@@ -107,16 +110,14 @@
                 }
               }
 
-              console.info(item)
-
-              var thisLocation = new google.maps.LatLng(item.lat,item.lng);
+              var thisLocation = new google.maps.LatLng(item.geometry.location.lat,item.geometry.location.lng);
               bounds.extend(thisLocation);
 
               window.setTimeout((function(){
                 var $thisLocation = thisLocation;
                 var $item = item;
                 var $counter = counter+1;
-                return function(){
+              return function(){
                   var m = new google.maps.Marker({
                     position: $thisLocation,
                     map: map,
@@ -131,7 +132,6 @@
 
             }
 
-            console.info(bounds);
             map.fitBounds(bounds);
 
           },
