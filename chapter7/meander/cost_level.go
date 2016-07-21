@@ -50,9 +50,9 @@ func (r CostRange) String() string {
 }
 
 // ParseCostRange parses a cost range string into a CostRange.
-func ParseCostRange(s string) *CostRange {
+func ParseCostRange(s string) CostRange {
 	segs := strings.Split(s, "...")
-	return &CostRange{
+	return CostRange{
 		From: ParseCost(segs[0]),
 		To:   ParseCost(segs[1]),
 	}
