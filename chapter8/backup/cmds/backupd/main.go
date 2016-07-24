@@ -28,7 +28,7 @@ func main() {
 		}
 	}()
 	var (
-		interval = flag.Int("interval", 10, "interval between checks (seconds)")
+		interval = flag.Duration("interval", 10*time.Second, "interval between checks")
 		archive  = flag.String("archive", "archive", "path to archive location")
 		dbpath   = flag.String("db", "./db", "path to filedb database")
 	)
@@ -70,16 +70,15 @@ func main() {
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 	for {
 		select {
-		case <-time.After(time.Duration(*interval) * time.Second):
+		case <-time.After(*interval):
 			check(m, col)
 		case <-signalChan:
 			// stop
 			fmt.Println()
 			log.Printf("Stopping...")
-			goto stop
+			return
 		}
 	}
-stop:
 }
 
 func check(m *backup.Monitor, col *filedb.C) {

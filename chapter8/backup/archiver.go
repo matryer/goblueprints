@@ -17,10 +17,9 @@ type Archiver interface {
 	Restore(src, dest string) error
 }
 
-// XDefaultArchiver represents an Archiver that is used when
+// DefaultArchiver represents an Archiver that is used when
 // no others have been specified.
 // Default is the ZIP archiver.
-
 var DefaultArchiver = ZIP
 
 type zipper struct{}
@@ -56,7 +55,10 @@ func (z *zipper) Archive(src, dest string) error {
 		if err != nil {
 			return err
 		}
-		io.Copy(f, in)
+		_, err = io.Copy(f, in)
+		if err != nil {
+			return err
+		}
 		return nil
 	})
 }
