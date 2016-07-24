@@ -21,9 +21,22 @@ func main() {
 		q := &meander.Query{
 			Journey: strings.Split(r.URL.Query().Get("journey"), "|"),
 		}
-		q.Lat, _ = strconv.ParseFloat(r.URL.Query().Get("lat"), 64)
-		q.Lng, _ = strconv.ParseFloat(r.URL.Query().Get("lng"), 64)
-		q.Radius, _ = strconv.Atoi(r.URL.Query().Get("radius"))
+		var err error
+		q.Lat, err = strconv.ParseFloat(r.URL.Query().Get("lat"), 64)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		q.Lng, err = strconv.ParseFloat(r.URL.Query().Get("lng"), 64)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		q.Radius, err = strconv.Atoi(r.URL.Query().Get("radius"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		q.CostRangeStr = r.URL.Query().Get("cost")
 		places := q.Run()
 		respond(w, r, places)
