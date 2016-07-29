@@ -5,11 +5,10 @@ import (
 	"net/http"
 	"strings"
 
-	"google.golang.org/appengine/user"
-
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/log"
+	"google.golang.org/appengine/user"
 )
 
 func handleAnswers() http.Handler {
@@ -104,7 +103,7 @@ func handleAnswerVote(w http.ResponseWriter, r *http.Request, answerID, upOrDown
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = answer.Vote(ctx, user, vote)
+	err = PutVote(ctx, answer, user, vote)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

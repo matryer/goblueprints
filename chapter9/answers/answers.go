@@ -58,51 +58,6 @@ func (a *Answer) Put(ctx context.Context) error {
 	return err
 }
 
-func (a *Answer) Vote(ctx context.Context, user *User, vote int) error {
-	voteKey := VoteKey(ctx, a.Key, user.Key)
-	err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {
-		// get or create the vote
-		var voteEntity Vote
-		var delta int
-		err := datastore.Get(ctx, voteKey, &voteEntity)
-		if err != nil && err != datastore.ErrNoSuchEntity {
-			return err
-		}
-		if err == datastore.ErrNoSuchEntity {
-			voteEntity = Vote{
-				AnswerKey: a.Key,
-				UserKey:   user.Key,
-				Value:     vote,
-			}
-		} else {
-			// changing existing vote
-			delta = -voteEntity.Value
-		}
-		voteEntity.Value = vote
-		_, err = datastore.Put(ctx, voteKey, &voteEntity)
-		if err != nil {
-			return err
-		}
-		// update the answer
-		var answer Answer
-		err = datastore.Get(ctx, a.Key, &answer)
-		if err != nil {
-			return err
-		}
-		delta += vote
-		answer.Score += delta
-		_, err = datastore.Put(ctx, a.Key, &answer)
-		if err != nil {
-			return err
-		}
-		return nil // success
-	}, &datastore.TransactionOptions{XG: true})
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func GetAnswer(ctx context.Context, answerKey *datastore.Key) (*Answer, error) {
 	var answer Answer
 	err := datastore.Get(ctx, answerKey, &answer)
