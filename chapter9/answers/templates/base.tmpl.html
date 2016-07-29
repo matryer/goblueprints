@@ -1,0 +1,64 @@
+<html>
+	<head>
+		<title>{{ .Title }}</title>
+		<link rel='stylesheet' href='/static/lib/semantic-ui/semantic.min.css'>
+		<link rel='stylesheet' href='/static/app.css'>
+	</head>
+	<body>
+		<div class='ui topmenu container'>
+			<div class='ui secondary menu'>
+			<a href='/' class='item'>
+				Home
+			</a>
+			<div class='item'>
+				<a href='/ask' class='ui primary button'>
+					Ask a question
+				</a>
+			</div>
+			<div class='right menu'>
+				<div class='item'>
+					<div class='ui icon input'>
+						<input type='text' placeholder='Search...'>
+						<i class='search link icon'></i>
+					</div>
+				</div>
+				{{if .User}}
+				<div class='ui dropdown item'>
+					{{.User.String}} <i class='dropdown icon'></i>
+					<div class='menu'>
+						<a href='{{.LogoutURL}}' class='item'>
+							Log out
+						</a>
+					</div>
+				</div>
+				{{else}}
+				<div class='item'>
+					<a href='{{.LoginURL}}' class='ui button'>
+						Login
+					</a>
+				</div>
+				{{end}}
+				</div>
+			</div>
+		</div>
+		<div class='ui divider'></div>
+		<div class='ui content container'>
+			{{template "content" .}}
+		</div>
+		<div class='ui divider'></div>
+		<div class='ui footer container'>
+			<div class='ui horizontal right floated bulleted link list'>
+				<a class='item' href='https://github.com/matryer/goblueprints' target='_blank'>
+					<i class='github icon'></i> GitHub project
+				</a>
+			</div>
+		</div>
+		<script src='/static/lib/jquery/jquery-v3.1.0.min.js'></script>
+		<script src='/static/lib/semantic-ui/semantic.min.js'></script>
+		<script>
+			$(function(){
+				$('.dropdown').dropdown()
+			})
+		</script>
+	</body>
+</html>

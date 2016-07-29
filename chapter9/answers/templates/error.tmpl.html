@@ -1,0 +1,14 @@
+{{define "content"}}
+<div class='ui error message'>
+	<strong>
+	{{if .Data.ErrorMessage}}
+		{{.Data.ErrorMessage}}
+	{{else}}
+		Oops, something went wrong
+	{{end}}
+	</strong>
+	<p>
+		Go back and try again
+	</p>
+</div>
+{{end}}

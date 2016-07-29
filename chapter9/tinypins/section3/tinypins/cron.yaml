@@ -1,0 +1,5 @@
+cron:
+- description: hourly garbage collection
+  url: /tasks/clean
+  target: defaulta
+  schedule: every 1 hours
