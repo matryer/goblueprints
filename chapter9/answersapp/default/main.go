@@ -1,0 +1,3 @@
+package defaultmodule
+
+func init() {}

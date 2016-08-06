@@ -1,0 +1,43 @@
+{{define "ask-question"}}
+<div class='ui small modal' data-modal='ask-question'>
+	<h2 class='header'>
+		Ask a question
+	</h2>
+	<div class='content'>
+		<form id='ask' method='post' action='/api/questions/' class='ui form'>
+			<div class='ui error message'></div>
+			<div class='field'>
+				<textarea 
+					name='question'
+					rows='2' 
+					placeholder='Type your question here, remember to use hashtags'></textarea>
+			</div>
+			<input type='submit' class='ui primary button' value='Submit question' />
+		</form>
+	</div>
+</div>
+<script type='deferred'>
+	$(function(){
+
+		var formAsk = $('form#ask')
+		formAsk.on('submit', function(e){
+			e.preventDefault()
+			formAsk.addClass('loading').removeClass('error')
+			$.api({
+				form: formAsk,
+				success: function(question){
+					location.href = '/questions/' + question.id
+				},
+				error: function(message) {
+					$('.error.message', formAsk).text(message)
+					formAsk.addClass('error')
+				},
+				complete: function(){
+					formAsk.removeClass('loading')
+				}
+			})
+		})
+
+	})
+</script>
+{{end}}
