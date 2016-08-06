@@ -71,8 +71,7 @@
 									$('<div>', {class:'content'}).append(
 										$('<a>', {class:'author'}).text(answer.user.display_name),
 										$('<div>', {class:'metadata'}).append(
-											$('<span>', {class:'date'}).text(moment(answer.created).fromNow()),
-											$("<span>", {class:'ui label'}).text(answer.score + " point(s)")
+											$('<span>', {class:'date'}).text(moment(answer.created).fromNow())
 										),
 										$('<div>', {class:'text'}).text(answer.answer),
 										$('<div>', {class:'actions'}).append(
@@ -89,7 +88,8 @@
 													'data-score':'-1',
 													'data-answer-id': answer.id
 												})
-											).click(onVoteClick)
+											).click(onVoteClick),
+											$("<span>", {class:'ui label'}).text(answer.score + " point(s)")
 										)
 									)
 								).appendTo(answersList)

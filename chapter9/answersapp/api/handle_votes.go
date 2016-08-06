@@ -2,11 +2,10 @@ package api
 
 import (
 	"errors"
+	"net/http"
 
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
-
-	"net/http"
 )
 
 func handleVotes(w http.ResponseWriter, r *http.Request) {

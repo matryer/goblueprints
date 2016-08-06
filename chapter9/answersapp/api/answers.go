@@ -75,7 +75,7 @@ func GetAnswers(ctx context.Context, questionKey *datastore.Key) ([]*Answer, err
 	answerKeys, err := datastore.NewQuery("Answer").
 		Ancestor(questionKey).
 		Order("-Score").
-		Order("-CTime").
+		Order("CTime").
 		GetAll(ctx, &answers)
 	for i, answer := range answers {
 		answer.Key = answerKeys[i]
