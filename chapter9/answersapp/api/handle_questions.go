@@ -1,7 +1,6 @@
 package api
 
 import (
-	"errors"
 	"net/http"
 
 	"google.golang.org/appengine"
@@ -24,7 +23,7 @@ func handleQuestionGet(w http.ResponseWriter, r *http.Request) {
 	params := pathParams(r, "/api/questions/:id")
 	questionID, ok := params[":id"]
 	if !ok {
-		respondErr(ctx, w, r, errors.New("missing question ID"), http.StatusBadRequest)
+		handleTopQuestions(w, r)
 		return
 	}
 	questionKey, err := datastore.DecodeKey(questionID)
@@ -42,6 +41,16 @@ func handleQuestionGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respond(ctx, w, r, question, http.StatusOK)
+}
+
+func handleTopQuestions(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	questions, err := TopQuestions(ctx)
+	if err != nil {
+		respondErr(ctx, w, r, err, http.StatusInternalServerError)
+		return
+	}
+	respond(ctx, w, r, questions, http.StatusOK)
 }
 
 func handleQuestionCreate(w http.ResponseWriter, r *http.Request) {

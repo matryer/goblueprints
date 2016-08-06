@@ -30,3 +30,10 @@ indexes:
     direction: desc
   - name: CTime
     direction: desc
+
+- kind: Question
+  properties:
+  - name: Score
+    direction: desc
+  - name: CTime
+    direction: desc

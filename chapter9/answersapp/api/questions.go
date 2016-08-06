@@ -69,6 +69,22 @@ func GetQuestion(ctx context.Context, key *datastore.Key) (*Question, error) {
 	return &q, nil
 }
 
+func TopQuestions(ctx context.Context) ([]*Question, error) {
+	var questions []*Question
+	questionKeys, err := datastore.NewQuery("Question").
+		Order("-Score").
+		Order("-CTime").
+		Limit(100).
+		GetAll(ctx, &questions)
+	if err != nil {
+		return nil, err
+	}
+	for i := range questions {
+		questions[i].Key = questionKeys[i]
+	}
+	return questions, nil
+}
+
 type QuestionCard struct {
 	Key      *datastore.Key `json:"id" datastore:"-"`
 	Question string         `json:"question"`
