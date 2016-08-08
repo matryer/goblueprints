@@ -72,9 +72,9 @@ func GetQuestion(ctx context.Context, key *datastore.Key) (*Question, error) {
 func TopQuestions(ctx context.Context) ([]*Question, error) {
 	var questions []*Question
 	questionKeys, err := datastore.NewQuery("Question").
-		Order("-Score").
+		Order("-AnswersCount").
 		Order("-CTime").
-		Limit(100).
+		Limit(25).
 		GetAll(ctx, &questions)
 	if err != nil {
 		return nil, err
@@ -82,6 +82,7 @@ func TopQuestions(ctx context.Context) ([]*Question, error) {
 	for i := range questions {
 		questions[i].Key = questionKeys[i]
 	}
+	log.Debugf(ctx, "questions: %s", questions)
 	return questions, nil
 }
 

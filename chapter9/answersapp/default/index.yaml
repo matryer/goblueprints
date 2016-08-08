@@ -15,18 +15,11 @@ indexes:
   properties:
   - name: Score
     direction: desc
-
-- kind: Answer
-  ancestor: yes
-  properties:
-  - name: Score
-    direction: desc
   - name: CTime
 
-- kind: Answer
-  ancestor: yes
+- kind: Question
   properties:
-  - name: Score
+  - name: AnswersCount
     direction: desc
   - name: CTime
     direction: desc

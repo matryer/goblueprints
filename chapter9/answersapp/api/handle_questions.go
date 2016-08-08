@@ -12,20 +12,20 @@ func handleQuestions(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		handleQuestionCreate(w, r)
 	case "GET":
-		handleQuestionGet(w, r)
+		params := pathParams(r, "/api/questions/:id")
+		questionID, ok := params[":id"]
+		if ok { // GET /api/questions/ID
+			handleQuestionGet(w, r, questionID)
+			return
+		}
+		handleTopQuestions(w, r) // GET /api/questions/
 	default:
 		http.NotFound(w, r)
 	}
 }
 
-func handleQuestionGet(w http.ResponseWriter, r *http.Request) {
+func handleQuestionGet(w http.ResponseWriter, r *http.Request, questionID string) {
 	ctx := appengine.NewContext(r)
-	params := pathParams(r, "/api/questions/:id")
-	questionID, ok := params[":id"]
-	if !ok {
-		handleTopQuestions(w, r)
-		return
-	}
 	questionKey, err := datastore.DecodeKey(questionID)
 	if err != nil {
 		respondErr(ctx, w, r, err, http.StatusBadRequest)
