@@ -2,7 +2,7 @@
 	{{template "head" "The Answers App"}}
 	<div class='ui container'>
 		<h2>Top questions</h2>
-		<div class='ui questions items'>
+		<div class='ui questions divided items'>
 		</div>
 	</div>
 	{{template "footer"}}
@@ -32,7 +32,7 @@
 								),
 								$('<div>', {class:'extra'}).append(
 									$('<a>', {
-										class:'ui right floated button',
+										class:'ui button',
 										href: '/questions/'+question.id
 									}).text(question.answers_count == 0 ? 'Answer' : 'See ' + question.answers_count + ' answer(s)...')
 								)
