@@ -1,3 +1,0 @@
-package defaultmodule
-
-func init() {}
