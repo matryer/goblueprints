@@ -1,0 +1,18 @@
+.topnav.container {
+	margin: 10px 0;
+}
+
+.error.message {
+	text-transform: capitalize;
+}
+
+.ui.comments .comment.top {
+	background-color: #eee;
+	padding: 10px;
+	margin: 0 -10px;
+}
+.ui.comments .comment.top:before {
+	content: "TOP ANSWER";
+	float: right;
+	color: #999;
+}

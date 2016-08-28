@@ -1,0 +1,22 @@
+{{define "head"}}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{.}}</title>
+	<link rel='stylesheet' href='/static/lib/semantic-ui/semantic.min.css'>
+	<link rel='stylesheet' href='/static/css/answers.css'>
+</head>
+<body>
+	{{template "top-nav"}}
+{{end}}
+
+{{define "footer"}}
+	{{template "ask-question"}}
+	<script src='/static/lib/jquery/jquery-v3.1.0.min.js'></script>
+	<script src='/static/lib/semantic-ui/semantic.min.js'></script>
+	<script src='/static/lib/momentjs/moment-v2.14.1.min.js'></script>
+	<script src='/static/lib/momentjs/moment.twitter.js'></script>
+	<script src='/static/js/answers.js'></script>
+</body>
+</html>
+{{end}}

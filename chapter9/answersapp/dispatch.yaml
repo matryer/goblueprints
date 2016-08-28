@@ -1,0 +1,6 @@
+application: theanswersapp
+dispatch:
+  - url: "*/api/*"
+    module: api
+  - url: "*/*"
+    module: web

@@ -1,0 +1,48 @@
+{{define "index"}}
+	{{template "head" "The Answers App"}}
+	<div class='ui container'>
+		<h2>Top questions</h2>
+		<div class='ui questions divided items'>
+		</div>
+	</div>
+	{{template "footer"}}
+	<script>
+	$(function(){
+		var questionsList = $('.questions.items')
+		$.api({
+			url: '/api/questions/',
+			success: function(questions) {
+				console.info(questions)
+
+				for (var i in questions) {
+					var question = questions[i]
+					questionsList.append(
+						$('<div>', {class:'item'}).append(
+							$('<div>', {class:'ui tiny image'}).append(
+								$('<img>', {src:question.user.avatar_url})
+							),
+							$('<div>', {class:'content'}).append(
+								$('<div>', {class:'header'}).text(question.question),
+								$('<div>', {class:'meta'}).append(
+									$('<span>', {class:'date'}).text(moment(question.created).calendar())
+								),
+								$('<div>', {class:'description'}).append(
+									"by ",
+									$('<span>').text(question.user.display_name)
+								),
+								$('<div>', {class:'extra'}).append(
+									$('<a>', {
+										class:'ui button',
+										href: '/questions/'+question.id
+									}).text(question.answers_count == 0 ? 'Answer' : 'See ' + question.answers_count + ' answer(s)...')
+								)
+							)
+						)
+					)
+				}
+
+			}
+		})
+	})
+	</script>
+{{end}}

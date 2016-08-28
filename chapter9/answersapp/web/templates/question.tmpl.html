@@ -1,0 +1,126 @@
+{{define "question"}}
+	{{template "head" "View Question"}}
+	<div class='ui main container'>
+		<h2>
+			<span data-field='question'></span>
+			<span class='ui label'>
+				<span data-field='answers_count'></span> answer(s)
+			</span>
+		</h2>
+		<div class='ui answers comments'>
+			
+		</div>
+		<h2 class='ui dividing header'>Submit an answer</h2>
+		<form id='answerform' class='ui form' method='post' action='/api/answers/'>
+			<input type='hidden' name='question_id' data-field='id'>
+			<div class='field'>
+				<textarea name='answer' rows='2' placeholder='Write your answer here'></textarea>
+			</div>
+			<input class='ui primary button' type='submit' value='Submit your answer' />
+		</form>
+	</div>
+	{{template "footer"}}
+	<script>
+
+		$(function(){
+
+			var answerForm = $('#answerform')
+
+			function onVoteClick(e) {
+				e.preventDefault()
+				var $this = $(e.target)
+				var score = parseInt($this.attr('data-score'))
+				var answerID = $this.attr('data-answer-id')
+
+				$.api({
+					type: 'post',
+					url: '/api/votes/',
+					data: JSON.stringify({
+						"answer_id": answerID,
+						"score": score
+					}),
+					success: function(){
+						location.reload()
+					},
+					error: function(){
+						console.warn('vote error', arguments)
+					}
+				})
+			}
+
+			// load the question
+			$.api({
+				url: '/api'+location.pathname,
+				success: function(question) {
+					console.info('question', question)
+					$('.main.container').inject(question)
+					// and load the answers
+					$.api({
+						url: "/api/answers/?question_id=" + question.id,
+						success: function(answers) {
+							console.info(answers)
+							var answersList = $('.answers.comments')
+							for (var i in answers) {
+								var answer = answers[i]
+								var answerEl = $('<div>', {class:'comment'}).append(
+									$('<a>', {class:'avatar'}).append(
+										$('<img>', {
+											src:   answer.user.avatar_url
+										})
+									),
+									$('<div>', {class:'content'}).append(
+										$('<a>', {class:'author'}).text(answer.user.display_name),
+										$('<div>', {class:'metadata'}).append(
+											$('<span>', {class:'date'}).text(moment(answer.created).fromNow())
+										),
+										$('<div>', {class:'text'}).text(answer.answer),
+										$('<div>', {class:'actions'}).append(
+											$('<a>').append(
+												$('<i>', {
+													class:'thumbs up icon',
+													'data-score':'1',
+													'data-answer-id': answer.id
+												})
+											).click(onVoteClick),
+											$('<a>').append(
+												$('<i>', {
+													class:'thumbs down icon',
+													'data-score':'-1',
+													'data-answer-id': answer.id
+												})
+											).click(onVoteClick),
+											$("<span>", {class:'ui label'}).text(answer.score + " point(s)")
+										)
+									)
+								).appendTo(answersList)
+								if (i == 0) {
+									answerEl.addClass('top')
+								}
+							}
+						}
+					})
+				}
+			})
+
+			answerForm.submit(function(e){
+				e.preventDefault()
+				answerForm.addClass('loading')
+				$.api({
+					form: answerForm,
+					success: function(answer){
+						location.reload()
+					},
+					error: function(message) {
+						$('.error.message', answerForm).text(message)
+						answerForm.addClass('error')
+					},
+					complete: function(){
+						answerForm.removeClass('loading')
+					}
+				})
+			})
+
+		})
+
+	</script>
+{{end}}
