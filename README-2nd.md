@@ -1,8 +1,8 @@
-# Go Programming Blueprints
+# Go Programming Blueprints: Second edition
 
 ![Go Blueprints by Mat Ryer book cover](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover.jpg)
 
-This is the official source code repository for the book. You are welcome to browse this repository and use the [issues tab](https://github.com/matryer/goblueprints/issues) to report any problems or ask any questions.
+This is the official source code repository for the book. You are welcome to browse this repository and use the [issues tab](https://github.com/matryer/goblueprints/issues) to report any problems or tweet the author [@matryer](https://twitter.com/matryer).
 
   * **Feel free to copy and paste from the repository where appropriate**, although typing the code out will surely do more for the learning experience
   * If you are enjoying the book, please tell others by [reviewing the book on Amazon](http://bit.ly/goblueprints)
@@ -14,4 +14,4 @@ This is the official source code repository for the book. You are welcome to bro
 
 ## Downloads
 
-  * Download the web component for Chapter 9
+  * Download the [web component for Chapter 9](https://github.com/matryer/goblueprints/blob/master/chapter9/answersapp/web.zip)

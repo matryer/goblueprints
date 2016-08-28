@@ -1,4 +1,4 @@
-# Go Programming Blueprints
+# Go Programming Blueprints: First edition
 
 ![Go Blueprints by Mat Ryer book cover](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover.jpg)
 
