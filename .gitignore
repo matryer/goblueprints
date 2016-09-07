@@ -114,3 +114,5 @@ chapter8/backup/cmds/backupd/db/backup.filedb
 chapter8.zip
 
 chapter10/vault/vaultsrv
+
+.DS_Store

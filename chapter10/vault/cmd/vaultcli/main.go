@@ -27,6 +27,7 @@ func main() {
 		grpcAddr = flag.String("addr", ":8081", "gRPC address")
 	)
 	flag.Parse()
+	ctx := context.Background()
 	conn, err := grpc.Dial(*grpcAddr, grpc.WithInsecure(), grpc.WithTimeout(1*time.Second))
 	if err != nil {
 		log.Fatalln("gRPC dial:", err)
@@ -40,27 +41,27 @@ func main() {
 	case "hash":
 		var password string
 		password, args = pop(args)
-		hash(vaultService, password)
+		hash(ctx, vaultService, password)
 	case "validate":
 		var password, hash string
 		password, args = pop(args)
 		hash, args = pop(args)
-		log.Println(password, hash)
-		validate(vaultService, password, hash)
+		validate(ctx, vaultService, password, hash)
 	default:
 		log.Fatalln("unknown command", cmd)
 	}
 }
 
-func hash(service vault.Service, password string) {
-	h, err := service.Hash(context.Background(), password)
+func hash(ctx context.Context, service vault.Service, password string) {
+	h, err := service.Hash(ctx, password)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
 	fmt.Println(h)
 }
-func validate(service vault.Service, password, hash string) {
-	valid, err := service.Validate(context.Background(), password, hash)
+
+func validate(ctx context.Context, service vault.Service, password, hash string) {
+	valid, err := service.Validate(ctx, password, hash)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}

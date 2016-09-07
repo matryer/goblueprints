@@ -21,6 +21,7 @@ func main() {
 		httpAddr = flag.String("http", ":8080", "http listen address")
 		gRPCAddr = flag.String("grpc", ":8081", "gRPC listen address")
 	)
+	flag.Parse()
 	ctx := context.Background()
 	hasherService := vault.NewService()
 	errChan := make(chan error)
@@ -32,6 +33,7 @@ func main() {
 
 	// HTTP transport
 	go func() {
+		log.Println("http:", *httpAddr)
 		handler := vault.NewHTTPServer(ctx, hasherService)
 		errChan <- http.ListenAndServe(*httpAddr, handler)
 	}()
@@ -43,6 +45,7 @@ func main() {
 			errChan <- err
 			return
 		}
+		log.Println("grpc:", *gRPCAddr)
 		handler := vault.NewGRPCServer(ctx, hasherService)
 		gRPCServer := grpc.NewServer()
 		pb.RegisterVaultServer(gRPCServer, handler)
