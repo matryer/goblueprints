@@ -9,7 +9,11 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
+	ratelimitkit "github.com/go-kit/kit/ratelimit"
+
+	"github.com/juju/ratelimit"
 	"github.com/matryer/goblueprints/chapter10/vault"
 	"github.com/matryer/goblueprints/chapter10/vault/pb"
 	"golang.org/x/net/context"
@@ -23,7 +27,7 @@ func main() {
 	)
 	flag.Parse()
 	ctx := context.Background()
-	hasherService := vault.NewService()
+	srv := vault.NewService()
 	errChan := make(chan error)
 	go func() {
 		c := make(chan os.Signal, 1)
@@ -31,10 +35,24 @@ func main() {
 		errChan <- fmt.Errorf("%s", <-c)
 	}()
 
+	rlbucket := ratelimit.NewBucket(1*time.Second, 5)
+	hashEndpoint := vault.MakeHashEndpoint(srv)
+	{
+		hashEndpoint = ratelimitkit.NewTokenBucketThrottler(rlbucket, time.Sleep)(hashEndpoint)
+	}
+	validateEndpoint := vault.MakeValidateEndpoint(srv)
+	{
+		validateEndpoint = ratelimitkit.NewTokenBucketThrottler(rlbucket, time.Sleep)(validateEndpoint)
+	}
+	endpoints := vault.Endpoints{
+		HashEndpoint:     hashEndpoint,
+		ValidateEndpoint: validateEndpoint,
+	}
+
 	// HTTP transport
 	go func() {
 		log.Println("http:", *httpAddr)
-		handler := vault.NewHTTPServer(ctx, hasherService)
+		handler := vault.NewHTTPServer(ctx, endpoints)
 		errChan <- http.ListenAndServe(*httpAddr, handler)
 	}()
 
@@ -46,7 +64,7 @@ func main() {
 			return
 		}
 		log.Println("grpc:", *gRPCAddr)
-		handler := vault.NewGRPCServer(ctx, hasherService)
+		handler := vault.NewGRPCServer(ctx, endpoints)
 		gRPCServer := grpc.NewServer()
 		pb.RegisterVaultServer(gRPCServer, handler)
 		errChan <- gRPCServer.Serve(listener)
