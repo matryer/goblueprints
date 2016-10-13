@@ -77,7 +77,7 @@ func encodeResponse(ctx context.Context, w http.ResponseWriter, response interfa
 	return json.NewEncoder(w).Encode(response)
 }
 
-func makeHashEndpoint(srv Service) endpoint.Endpoint {
+func MakeHashEndpoint(srv Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(hashRequest)
 		v, err := srv.Hash(ctx, req.Password)
@@ -88,7 +88,7 @@ func makeHashEndpoint(srv Service) endpoint.Endpoint {
 	}
 }
 
-func makeValidateEndpoint(srv Service) endpoint.Endpoint {
+func MakeValidateEndpoint(srv Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(validateRequest)
 		v, err := srv.Validate(ctx, req.Password, req.Hash)

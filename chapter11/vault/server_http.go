@@ -8,17 +8,17 @@ import (
 )
 
 // NewHTTPServer makes a new Vault HTTP service.
-func NewHTTPServer(ctx context.Context, vaultService Service) http.Handler {
+func NewHTTPServer(ctx context.Context, endpoints Endpoints) http.Handler {
 	m := http.NewServeMux()
 	m.Handle("/hash", httptransport.NewServer(
 		ctx,
-		makeHashEndpoint(vaultService),
+		endpoints.HashEndpoint,
 		decodeHashRequest,
 		encodeResponse,
 	))
 	m.Handle("/validate", httptransport.NewServer(
 		ctx,
-		makeValidateEndpoint(vaultService),
+		endpoints.ValidateEndpoint,
 		decodeValidateRequest,
 		encodeResponse,
 	))
