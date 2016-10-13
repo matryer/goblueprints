@@ -8,17 +8,17 @@ import (
 )
 
 // NewGRPCServer gets a new pb.VaultServer.
-func NewGRPCServer(ctx context.Context, vaultService Service) pb.VaultServer {
+func NewGRPCServer(ctx context.Context, endpoints Endpoints) pb.VaultServer {
 	return &grpcServer{
 		hash: grpctransport.NewServer(
 			ctx,
-			makeHashEndpoint(vaultService),
+			endpoints.HashEndpoint,
 			DecodeGRPCHashRequest,
 			EncodeGRPCHashResponse,
 		),
 		validate: grpctransport.NewServer(
 			ctx,
-			makeValidateEndpoint(vaultService),
+			endpoints.ValidateEndpoint,
 			DecodeGRPCValidateRequest,
 			EncodeGRPCValidateResponse,
 		),
