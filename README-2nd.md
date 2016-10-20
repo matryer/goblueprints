@@ -1,6 +1,6 @@
 # Go Programming Blueprints: Second edition
 
-![Go Blueprints by Mat Ryer book cover](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover.jpg)
+![Go Blueprints by Mat Ryer book cover](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover-2nd.png)
 
 This is the official source code repository for the book. You are welcome to browse this repository and use the [issues tab](https://github.com/matryer/goblueprints/issues) to report any problems or tweet the author [@matryer](https://twitter.com/matryer).
 
