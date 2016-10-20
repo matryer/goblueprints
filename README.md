@@ -4,8 +4,15 @@ This is the official source code repository for the book. You are welcome to bro
 
 ## Select the edition
 
-![First Edition](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover.jpg)
-![Second Edition](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover-2nd.png)
+### Second edition
+
+![Second Edition](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover-2nd-small.png)
+
+* [Second edition](README-2nd.md)
+
+### First edition
+
+![First Edition](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover-small.jpg)
 
 ## Get the book
 
