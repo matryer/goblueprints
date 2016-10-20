@@ -9,7 +9,7 @@ This is the official source code repository for the book. You are welcome to bro
 
 ## Get the book
 
-  * From [Amazon.com](http://bit.ly/goblueprints) 
+  * From [Amazon.com](https://www.amazon.co.uk/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=go+programming+blueprints) 
   * Free articles about Go in the real world: [https://medium.com/@matryer](https://medium.com/@matryer)
 
 ## Projects

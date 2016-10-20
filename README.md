@@ -14,7 +14,9 @@ This is the official source code repository for the book. You are welcome to bro
 
 ![First Edition](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover-small.jpg)
 
+* [First edition](README-1st.md)
+
 ## Get the book
 
-  * From [Amazon.com](http://bit.ly/goblueprints) 
+  * From [Amazon.com](https://www.amazon.co.uk/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=go+programming+blueprints) 
   * Free articles about Go in the real world: [https://medium.com/@matryer](https://medium.com/@matryer)
