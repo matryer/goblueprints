@@ -2,19 +2,9 @@
 
 This is the official source code repository for the book. You are welcome to browse this repository and use the [issues tab](https://github.com/matryer/goblueprints/issues) to report any problems or ask any questions.
 
-## Select the edition
+## Select edition
 
-### Second edition
-
-![Second Edition](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover-2nd-small.png)
-
-* [Second edition](README-2nd.md)
-
-### First edition
-
-![First Edition](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover-small.jpg)
-
-* [First edition](README-1st.md)
+[![Second Edition](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover-2nd-small.png)](README-2nd.md) [![First Edition](https://raw.githubusercontent.com/matryer/goblueprints/master/artwork/bookcover-small.jpg)](README-1st.md)
 
 ## Get the book
 
