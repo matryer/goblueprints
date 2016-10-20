@@ -27,6 +27,8 @@ Throughout the book many projects, programs and packages are developed, includin
 
 Each chapter has its own section which it is recommended that you read _before_ embarking on the chapter itself, as updates, tweaks, bug fixes, additional notes and tips will be outlined here.
 
+* See also [the original source code for the first edition of the book](https://github.com/matryer/goblueprints/tree/cb2078d9aa6b5b7cc51e80912be82cbba4d2f9a1)
+
 ### Chapter 1
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter1)
