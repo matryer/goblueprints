@@ -30,6 +30,7 @@ Each chapter has its own section which it is recommended that you read _before_ 
 ### Chapter 1
 
   * Browse the [Source code](https://github.com/matryer/goblueprints/tree/master/chapter1)
+  * If you're getting some kind of `version != 13` error, you may want to read towards the bottom of [this issue](https://github.com/matryer/goblueprints/issues/18)
 
 ### Chapter 2
 
