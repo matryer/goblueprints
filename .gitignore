@@ -118,3 +118,5 @@ chapter10/vault/vaultsrv
 .DS_Store
 
 chapter11/vault/vaultd
+
+chapter5/twittervotes/setup.sh
