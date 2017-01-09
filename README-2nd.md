@@ -16,6 +16,10 @@ This is the official source code repository for the book. You are welcome to bro
 
   * Download the [web component for Chapter 9](https://github.com/matryer/goblueprints/blob/master/chapter9/answersapp/web.zip)
 
+## Notes
+
+* Page 10: There is a missing backtic, the compiler will help you here. It should be \`)) instead of ))
+
 ## Source code
 
 * See a [snapshot of the code at the point of the second edition release](https://github.com/matryer/goblueprints/tree/b4de110c767ba438fadf376534701a2595832bc5)
