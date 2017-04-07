@@ -35,15 +35,15 @@ func TestAuthAvatar(t *testing.T) {
 }
 func TestGravatarAvatar(t *testing.T) {
 
-	var gravatarAvitar GravatarAvatar
+	var gravatarAvatar GravatarAvatar
 	user := &chatUser{uniqueID: "abc"}
 
-	url, err := gravatarAvitar.GetAvatarURL(user)
+	url, err := gravatarAvatar.GetAvatarURL(user)
 	if err != nil {
-		t.Error("GravatarAvitar.GetAvatarURL should not return an error")
+		t.Error("GravatarAvatar.GetAvatarURL should not return an error")
 	}
 	if url != "//www.gravatar.com/avatar/abc" {
-		t.Errorf("GravatarAvitar.GetAvatarURL wrongly returned %s", url)
+		t.Errorf("GravatarAvatar.GetAvatarURL wrongly returned %s", url)
 	}
 
 }
