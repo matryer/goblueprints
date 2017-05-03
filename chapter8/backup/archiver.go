@@ -80,24 +80,22 @@ func (z *zipper) Restore(src, dest string) error {
 	for _, f := range r.File {
 		w.Add(1)
 		go func(f *zip.File) {
+			defer w.Done()
 			zippedfile, err := f.Open()
 			if err != nil {
 				errChan <- err
-				w.Done()
 				return
 			}
 			toFilename := path.Join(dest, f.Name)
 			err = os.MkdirAll(path.Dir(toFilename), 0777)
 			if err != nil {
 				errChan <- err
-				w.Done()
 				return
 			}
 			newFile, err := os.Create(toFilename)
 			if err != nil {
 				zippedfile.Close()
 				errChan <- err
-				w.Done()
 				return
 			}
 			_, err = io.Copy(newFile, zippedfile)
@@ -105,10 +103,8 @@ func (z *zipper) Restore(src, dest string) error {
 			zippedfile.Close()
 			if err != nil {
 				errChan <- err
-				w.Done()
 				return
 			}
-			w.Done()
 		}(f)
 	}
 	w.Wait()
