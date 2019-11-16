@@ -8,5 +8,5 @@ This is the official source code repository for the book. You are welcome to bro
 
 ## Get the book
 
-  * From [Amazon.com](https://www.amazon.co.uk/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=go+programming+blueprints+ryer) 
+  * From [Amazon.com](https://www.amazon.co.uk/Programming-Blueprints-real-world-production-ready-cutting-edge/dp/1786468948/ref=sr_1_4?keywords=go+programming+blueprints+ryer&qid=1573895643&sr=8-4) 
   * Free articles about Go in the real world: [https://medium.com/@matryer](https://medium.com/@matryer)
