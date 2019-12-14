@@ -34,7 +34,7 @@ func (vaultService) Hash(ctx context.Context, password string) (string, error) {
 func (vaultService) Validate(ctx context.Context, password, hash string) (bool, error) {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	if err != nil {
-		return false, nil
+		return false, err
 	}
 	return true, nil
 }
