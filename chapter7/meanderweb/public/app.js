@@ -110,7 +110,7 @@
                 }
               }
 
-              var thisLocation = new google.maps.LatLng(item.geometry.location.lat,item.geometry.location.lng);
+              var thisLocation = new google.maps.LatLng(item.lat, item.lng);
               bounds.extend(thisLocation);
 
               window.setTimeout((function(){
